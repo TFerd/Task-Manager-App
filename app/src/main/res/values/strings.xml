@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">MobileAppProject</string>
+    <string name="home">Home</string>
+    <string name="tasks">Tasks</string>
+    <string name="calendar">Calendar</string>
+    <string name="greeting">Welcome Back!\nHere\'s the to-do\'s today!</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home_placeholder">Home Screen Placeholder Text</string>
+    <string name="tasks_placeholder">Tasks Screen Placeholder Text</string>
+    <string name="calendar_placeholder">Calendar Screen Placeholder Text</string>
+</resources>
