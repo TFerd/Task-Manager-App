@@ -75,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
         myPagerController = new PagerController(getSupportFragmentManager(), myTabLayout.getTabCount());
         myPager.setAdapter(myPagerController);
 
-
         //This Listener is how the view changes based on which tab is selected
         myTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
