@@ -18,13 +18,13 @@ public class CalendarFragment extends Fragment {
 
 
     public CalendarFragment(){
-        Log.i(TAG, "constructed.");
+        Log.d(TAG, "constructed.");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.i(TAG, "created.");
+        Log.d(TAG, "created.");
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_calendar, container, false);
     }

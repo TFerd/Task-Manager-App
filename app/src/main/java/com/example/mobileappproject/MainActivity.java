@@ -19,8 +19,16 @@ import com.google.android.material.tabs.TabLayout;
 *   along with https://www.tutlane.com/tutorial/android/android-tabs-with-fragments-and-viewpager
 *
 *
-*   USE:     Log.i(TAG, "insert message here");      FOR DEBUGGING PLEASE.
+*   USE:     Log.d(TAG, "insert message here");      FOR DEBUGGING PLEASE.
 *   USE IT A LOT!!!
+*   ALSO USE: Log.i();
+*   google tells me to use Log.d to track methods being called for debugging,
+*   and Log.i to report successes in the program (like when a certain action is completed or certain status is reached).
+*
+*  #########
+*  ######### YOU CAN TYPE logt TO AUTOMATICALLY DECLARE THE TAG FOR THE LOG!!!!!!!!!!!!!!!!!!!
+*  ######### logd WILL AUTO CREATE A Log.d() THING!!! I ASSUME IT WORKS THE SAME FOR logi
+*  #########
 *
 *   ALSO: Write a lot of comments
 *
@@ -29,12 +37,16 @@ import com.google.android.material.tabs.TabLayout;
 *   i was pretty much copying the youtube tutorial.
 *   It seems like commenting-out the toolbar stuff has no effect on the program.
 *
-*
+*   #########################
 *   ####    IMPORTANT    ####
+*   #########################
 *   When working in the fragment class files, it is important to remember that the onCreate() method runs as soon as the program is launched
 *   and before the fragment is even visible.
 *
 *   The onCreateView() method is called when the fragment is actually shown on the screen.
+*
+*   @TODO:
+*     Add some try-catch stuff around some stuff
  */
 
 
@@ -54,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.i(TAG, "started.");
+        Log.d(TAG, "started.");
 
         //Toolbar
         myToolbar = (Toolbar)findViewById(R.id.toolbar);

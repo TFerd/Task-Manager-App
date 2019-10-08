@@ -16,7 +16,7 @@ public class PagerController extends FragmentPagerAdapter {
     public PagerController(FragmentManager fm, int tabCount) {
         super(fm);
         this.tabCount = tabCount;
-        Log.i(TAG, "tabCount is - " + tabCount);
+        Log.d(TAG, "tabCount is - " + tabCount);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class PagerController extends FragmentPagerAdapter {
                 Log.i(TAG, "Case 2 - CalendarFragment()");
                 return new CalendarFragment();
             default:
-                Log.e(TAG, "Case Default reached, returning null...");
+                Log.wtf(TAG, "Case Default somehow reached, returning null...");
                 return null;
         }
 
