@@ -77,6 +77,8 @@ public class TasksFragment extends Fragment {
         adapter = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, taskArray);
         listView.setAdapter(adapter);
 
+        adapter.add("Task 4 added by adapter");
+
         return v;
     }
 
