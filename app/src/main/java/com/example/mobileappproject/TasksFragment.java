@@ -31,7 +31,7 @@ public class TasksFragment extends Fragment {
     private static final String TAG = "TasksFragment";
 
     ListView listView;
-    ArrayAdapter adapter;
+    //ArrayAdapter adapter;
 
     //@TODO:
     //  Create an array of tasks somehow that the user will be able to add/edit/remove.
@@ -64,7 +64,7 @@ public class TasksFragment extends Fragment {
         Log.d(TAG, "created.");
 
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_tasks, container, false);
+        View view = inflater.inflate(R.layout.fragment_tasks, container, false);
 
         taskArray = new ArrayList<>();
         taskArray.add("Task 1");
@@ -73,13 +73,13 @@ public class TasksFragment extends Fragment {
 
         //Now you can use findViewById()
         //Make sure you start it like v.findViewById()
-        listView = (ListView)v.findViewById(R.id.taskList);
-        adapter = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, taskArray);
+        listView = (ListView)view.findViewById(R.id.taskList);
+        CustomAdapter adapter = new CustomAdapter(taskArray, getContext());
         listView.setAdapter(adapter);
 
-        adapter.add("Task 4 added by adapter");
+        //adapter.add("Task 4 added by adapter");
 
-        return v;
+        return view;
     }
 
 
