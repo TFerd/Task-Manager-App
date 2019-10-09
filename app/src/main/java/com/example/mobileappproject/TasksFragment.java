@@ -56,7 +56,9 @@ public class TasksFragment extends Fragment {
     }
     */
 
-    //IF YOU REPLACE 'return' WITH A VIEW VARIABLE THEN U CAN USE findViewById()
+    //***************************************************************************
+    //IF YOU REPLACE 'return' WITH A VIEW VARIABLE THEN U CAN USE findViewById()*
+    //***************************************************************************
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -67,9 +69,14 @@ public class TasksFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_tasks, container, false);
 
         taskArray = new ArrayList<>();
+        taskArray.add("");
+        /*
         taskArray.add("Task 1");
         taskArray.add("Task 2");
         taskArray.add("Task 3");
+
+         */
+
 
         //Now you can use findViewById()
         //Make sure you start it like v.findViewById()

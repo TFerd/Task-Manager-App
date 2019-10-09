@@ -11,6 +11,8 @@
         android:layout_alignParentLeft="true"
         android:paddingLeft="8dp"
         android:textSize="18sp"
+        android:text="Task Text"
+        android:visibility="visible"
 
         />
 
@@ -21,15 +23,31 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="5dp"
-        android:text="Delete" />
+        android:text="@string/delete_button"
+        android:visibility="gone"
+        />
 
     <Button
-        android:id="@+id/add_btn"
+        android:id="@+id/edit_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@id/delete_btn"
         android:layout_centerVertical="true"
         android:layout_marginRight="10dp"
-        android:text="Add" />
+        android:text="@string/edit_button"
+        android:visibility="gone"
+
+        />
+
+    <Button
+        android:id="@+id/add_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/add_button"
+        android:layout_marginRight="5dp"
+
+        />
 
 </RelativeLayout>
