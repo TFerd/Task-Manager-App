@@ -80,15 +80,14 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
 
         //Button initializer
         Button deleteButton = (Button)view.findViewById(R.id.delete_btn);
-        //final Button addButton = (Button)view.findViewById(R.id.add_btn);
         Button editButton = (Button)view.findViewById(R.id.edit_btn);
 
+        //final Button addButton = (Button)view.findViewById(R.id.add_btn);
         //FloatingActionButton fab = (FloatingActionButton)view.findViewById(R.id.addFAB);
 
 
         //Button Handlers
-        //@TODO
-        //  Add confirmation to delete items
+        //Delete button has a confirmation screen to delete the task.
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,7 +111,6 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
                         list.remove(positionToDelete);
                         notifyDataSetChanged();
 
-
                         Log.i(TAG, "onClick: Task " + position + " deleted.");
                     }
                 });
@@ -120,62 +118,8 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
                 AlertDialog confirmDeleteDialog = builder.create();
                 confirmDeleteDialog.show();
 
-
-                /*
-                list.remove(position);
-                notifyDataSetChanged();
-
-                Log.i(TAG, "onClick: Task deleted");
-                 */
             }
         });
-
-        /*
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                
-                
-                list.add("Task: " + ++taskCount);
-                
-                notifyDataSetChanged();
-
-                Log.i(TAG, "onClick: Task added");
-            }
-        });
-
-         */
-        
-/*
-        //TODO@
-        //  Add the AlertDialog here to change the details of the task.
-        //This is where you add Tasks to the List i think
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //list.add();
-
-                ++taskCount;
-
-                //Adds the task to the ListView
-                //The edit and delete button are GONE by default, so we set them visible here
-                //We also set the add button to GONE so we only have one add button
-                list.add(list.size(), "Task " + taskCount);
-
-
-
-                notifyDataSetChanged();
-
-                Toast toast = Toast.makeText(v.getContext(), "Added " + getItem(position).toString(), Toast.LENGTH_SHORT);
-                toast.show();
-                Log.i(TAG, "onClick: Task added");
-
-
-            }
-        });
-
- */
-
 
 
         //Edit button
@@ -193,11 +137,13 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
     }
 
 
+    //@TODO
+    //  This is probably where we will add more task attributes.
     public void addItem(String task){
 
         Log.d(TAG, "addItem: called");
 
-        list.add(task + ++taskCount);
+        list.add(task);
         notifyDataSetChanged();
 
         Log.i(TAG, "addItem: completed. Task added.");

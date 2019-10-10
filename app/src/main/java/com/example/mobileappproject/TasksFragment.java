@@ -1,6 +1,8 @@
 package com.example.mobileappproject;
 
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -10,23 +12,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
-/*
-* @TODO: Add a ListView and try to implement the plus arrow icon to add tasks. Arrow found in the res/drawable folder.
-*   ACTUALLY: TRY A RecyclerView.
-*   ACTUALLY x2: Maybe a ListView is fine after all lol.
-*
-*
-* The plus sign might be at the top of the ListView. If there are tasks, then find the very bottom task and put
-* the plus sign under it.
-*
-*
- */
 
 public class TasksFragment extends Fragment {
 
@@ -45,12 +38,6 @@ public class TasksFragment extends Fragment {
         Log.d(TAG, "constructed.");
     }
 
-    //@TODO
-    //  Maybe move the declaration of the ListView to the onCreate method, which is only declared once i think?
-    //  Also i think i cant use findViewById here, stackoverflow says that u can only use it after onCreateView()???
-    //@TODO
-    //  OKAY NEVERMIND JUST USE THE onCreateView() for findViewById(), it should work...
-
     /*
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -68,18 +55,9 @@ public class TasksFragment extends Fragment {
         Log.d(TAG, "created.");
 
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_tasks, container, false);
+        final View view = inflater.inflate(R.layout.fragment_tasks, container, false);
 
         taskArray = new ArrayList<>();
-        //taskArray.add("test");
-        /*
-        taskArray.add("Task 1");
-        taskArray.add("Task 2");
-        taskArray.add("Task 3");
-
-         */
-
-
 
 
         //Now you can use findViewById()
@@ -93,14 +71,49 @@ public class TasksFragment extends Fragment {
         //  Add more options to the FAB, maybe like delete all? Or maybe dont add anything to it at all lol
         FloatingActionButton fab = (FloatingActionButton)view.findViewById(R.id.addFAB);
 
+
+        //Creates a dialog popup when addTask is clicked.
+        //This dialog is where the user will fill in the details of the task.
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                adapter.addItem("Task");
+                final Dialog dialog = new Dialog(view.getContext());
+                dialog.setContentView(R.layout.custom_add_dialog);
+                dialog.setTitle("Create new task");
+
+                final EditText editText = (EditText)dialog.findViewById(R.id.dialogInput);
+                Button dialogOkBtn = (Button)dialog.findViewById(R.id.dialogOk);
+                Button dialogCancel = (Button)dialog.findViewById(R.id.dialogCancel);
+
+
+                dialogOkBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (editText.getText().toString().length() > 0) {
+                            adapter.addItem(editText.getText().toString());
+                            dialog.dismiss();
+                        }
+
+                        else {
+                            editText.setError("Cannot be blank!");
+                        }
+                    }
+                });
+                
+                dialogCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+
+                        Log.i(TAG, "onClick: Dialog dismissed.");
+                    }
+                });
+                
+                dialog.show();
+
+                Log.i(TAG, "onClick: Dialog shown.");
             }
         });
-
-        //adapter.add("Task 4 added by adapter");
 
         return view;
     }
