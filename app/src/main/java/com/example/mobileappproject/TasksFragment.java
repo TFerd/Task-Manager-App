@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 
 /*
@@ -69,7 +71,7 @@ public class TasksFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_tasks, container, false);
 
         taskArray = new ArrayList<>();
-        taskArray.add("");
+        //taskArray.add("test");
         /*
         taskArray.add("Task 1");
         taskArray.add("Task 2");
@@ -78,11 +80,25 @@ public class TasksFragment extends Fragment {
          */
 
 
+
+
         //Now you can use findViewById()
         //Make sure you start it like v.findViewById()
         listView = (ListView)view.findViewById(R.id.taskList);
-        CustomAdapter adapter = new CustomAdapter(taskArray, getContext());
+        final CustomAdapter adapter = new CustomAdapter(taskArray, getContext());
         listView.setAdapter(adapter);
+
+
+        //@TODO
+        //  Add more options to the FAB, maybe like delete all? Or maybe dont add anything to it at all lol
+        FloatingActionButton fab = (FloatingActionButton)view.findViewById(R.id.addFAB);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                adapter.addItem("Task");
+            }
+        });
 
         //adapter.add("Task 4 added by adapter");
 
