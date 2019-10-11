@@ -9,32 +9,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
 //@Todo
 //  Change the ArrayList<String> parameter to ArrayList<Task> when the Task class is set up.
-//  Change the Add button to an Edit button and add an Add button somewhere else.
-//  *** The add button can be kept at the bottom by using list.add(list.size() - 1, <task>) when you add a task***
-//  ANOTHER WAY FOR ADD BUTTON: Set the buttons visibility to true (from GONE)
 
 
 public class CustomAdapter extends BaseAdapter implements ListAdapter {
 
     private static final String TAG = "CustomAdapter";
 
-    private ArrayList<String> list;
+    private ArrayList<Task> list;
     private Context context;
 
-    private int taskCount = 0;
 
 
-    public CustomAdapter(ArrayList<String> list, Context context){
+
+
+    public CustomAdapter(ArrayList<Task> list, Context context){
         this.list = list;
         this.context = context;
     }
@@ -74,16 +71,19 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
             Log.i(TAG, "getView: View inflated successfully");
         }
 
+        //**************************************************************************
+        //**********THIS IS WHERE YOU CAN EDIT THE ListView XML ITEMS***************
+        //**************************************************************************
         //Displays the String from the List
         TextView listItemText = (TextView)view.findViewById(R.id.list_item_text);
-        listItemText.setText(list.get(position));
+        listItemText.setText(list.get(position).getTaskName());
+
+        CheckBox cb = (CheckBox)view.findViewById(R.id.list_checkbox);
+        cb.setChecked(list.get(position).isNotification());
 
         //Button initializer
         Button deleteButton = (Button)view.findViewById(R.id.delete_btn);
         Button editButton = (Button)view.findViewById(R.id.edit_btn);
-
-        //final Button addButton = (Button)view.findViewById(R.id.add_btn);
-        //FloatingActionButton fab = (FloatingActionButton)view.findViewById(R.id.addFAB);
 
 
         //Button Handlers
@@ -139,14 +139,40 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
 
     //@TODO
     //  This is probably where we will add more task attributes.
-    public void addItem(String task){
+    /*
+    public void addItem(String task, boolean notify){
 
-        Log.d(TAG, "addItem: called");
+        Log.d(TAG, "addItem: called. WITHOUT DESCRIPTION");
+
+
+        list.add(task);
+
+        notifyDataSetChanged();
+
+        Log.i(TAG, "addItem: completed. Task added.");
+
+    }
+
+    public void addItem(String task, String desc, boolean notify){
+
+        Log.d(TAG, "addItem: called. WITH DESCRIPTION");
+
+
+
 
         list.add(task);
         notifyDataSetChanged();
 
         Log.i(TAG, "addItem: completed. Task added.");
+
+    }*/
+    
+    public void addItem(Task task){
+
+        list.add(task);
+        notifyDataSetChanged();
+
+        Log.i(TAG, "addItem: Task added");
 
     }
 }

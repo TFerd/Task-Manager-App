@@ -11,6 +11,14 @@ public class Task {
     //location variable
     boolean notification;
 
+    //Constructor for Task without description
+    public Task(String taskName, boolean notification){
+        this.taskName = taskName;
+        this.notification = notification;
+
+    }
+
+    //Constructor for Task WITH description
     public Task(String taskName, String taskDescription, boolean notification){
         this.taskName = taskName;
         this.taskDescription = taskDescription;

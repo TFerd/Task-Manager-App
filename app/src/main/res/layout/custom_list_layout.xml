@@ -15,6 +15,30 @@
 
         />
 
+    <TextView
+        android:id="@+id/list_notify_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_dialog_notif"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/list_checkbox"
+        android:textSize="18sp"
+        android:padding="2dp"
+
+        />
+
+    <CheckBox
+        android:id="@+id/list_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:checked="true"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/edit_btn"
+
+
+        />
+
     <Button
         android:id="@+id/delete_btn"
         android:layout_width="wrap_content"

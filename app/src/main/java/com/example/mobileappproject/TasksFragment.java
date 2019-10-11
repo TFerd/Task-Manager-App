@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -31,7 +32,8 @@ public class TasksFragment extends Fragment {
     //@TODO:
     //  Create an array of tasks somehow that the user will be able to add/edit/remove.
     //  Maybe make a Task class
-    ArrayList<String> taskArray;
+    //ArrayList<String> taskArray;
+    ArrayList<Task> taskArray;
 
 
     public TasksFragment(){
@@ -72,6 +74,8 @@ public class TasksFragment extends Fragment {
         FloatingActionButton fab = (FloatingActionButton)view.findViewById(R.id.addFAB);
 
 
+        //@TODO
+        //  Add a warning about adding tasks with the same name as another task
         //Creates a dialog popup when addTask is clicked.
         //This dialog is where the user will fill in the details of the task.
         fab.setOnClickListener(new View.OnClickListener() {
@@ -81,25 +85,57 @@ public class TasksFragment extends Fragment {
                 dialog.setContentView(R.layout.custom_add_dialog);
                 dialog.setTitle("Create new task");
 
-                final EditText editText = (EditText)dialog.findViewById(R.id.dialogInput);
+                final EditText taskName = (EditText)dialog.findViewById(R.id.dialogInput);
+                final EditText taskDesc = (EditText)dialog.findViewById(R.id.dialogDesc);
+
+                final CheckBox taskNotify = (CheckBox)dialog.findViewById(R.id.dialog_notify);
+
                 Button dialogOkBtn = (Button)dialog.findViewById(R.id.dialogOk);
                 Button dialogCancel = (Button)dialog.findViewById(R.id.dialogCancel);
 
+                final CheckBox cb = (CheckBox)dialog.findViewById(R.id.list_checkbox);
 
+                //The on-click listener for the pop-up dialog's confirm button
                 dialogOkBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (editText.getText().toString().length() > 0) {
-                            adapter.addItem(editText.getText().toString());
+
+                        //If the task does NOT have a description
+                        if (taskName.getText().toString().length() > 0 && taskDesc.getText().toString().length() < 1) {
+
+                            Task task = new Task(taskName.getText().toString(), taskNotify.isChecked());
+
+                            //adapter.addItem(taskName.getText().toString());
+                            //adapter.addItem(task.getTaskName(), task.isNotification());
+                            adapter.addItem(task);
+
+                            Log.i(TAG, "onClick: Task added WITHOUT description. Notifications = " + task.isNotification());
+
                             dialog.dismiss();
                         }
 
+                        //If the task DOES have a description
+                        else if (taskName.getText().toString().length() > 0 && taskDesc.getText().toString().length() > 0){
+
+                            Task task = new Task(taskName.getText().toString(), taskDesc.getText().toString(), taskNotify.isChecked());
+
+                            //adapter.addItem(task.getTaskName(), task.getTaskDescription(), task.isNotification());
+                            adapter.addItem(task);
+
+
+                            Log.i(TAG, "onClick: Task added WITH description. Notifications = " + task.isNotification());
+
+                            dialog.dismiss();
+                        }
+
+                        //Gives an error if there is no task name
                         else {
-                            editText.setError("Cannot be blank!");
+                            taskName.setError("Cannot be blank!");
                         }
                     }
                 });
-                
+
+                //Dismisses the dialog
                 dialogCancel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
