@@ -7,11 +7,11 @@
         android:id="@+id/list_item_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:paddingLeft="8dp"
         android:textSize="18sp"
         android:text="Task Text"
+        android:clickable="true"
 
         />
 
@@ -20,7 +20,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/add_dialog_notif"
-        android:layout_centerVertical="true"
         android:layout_toLeftOf="@id/list_checkbox"
         android:textSize="18sp"
         android:padding="2dp"
@@ -33,7 +32,6 @@
         android:layout_height="wrap_content"
         android:clickable="false"
         android:checked="true"
-        android:layout_centerVertical="true"
         android:layout_toLeftOf="@id/edit_btn"
 
 
@@ -44,9 +42,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
         android:layout_marginRight="5dp"
         android:text="@string/delete_button"
+
         />
 
     <Button
@@ -54,9 +52,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@id/delete_btn"
-        android:layout_centerVertical="true"
         android:layout_marginRight="10dp"
         android:text="@string/edit_button"
+        />
+
+    <TextView
+        android:id="@+id/list_item_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="false"
+        android:layout_below="@id/list_notify_text"
+        android:text="TASK DESCRIPTION"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="30dp"
+        android:layout_margin="10dp"
+        android:textSize="16sp"
+        android:visibility="gone"
+
         />
 
 

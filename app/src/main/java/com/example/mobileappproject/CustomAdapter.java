@@ -19,6 +19,9 @@ import java.util.ArrayList;
 //@Todo
 //  Change the ArrayList<String> parameter to ArrayList<Task> when the Task class is set up.
 
+//*********************************************************************
+//* CustomAdapter class is for the ListView in the TaskFragment class *
+//*********************************************************************
 
 public class CustomAdapter extends BaseAdapter implements ListAdapter {
 
@@ -61,6 +64,7 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
         Log.i(TAG, "getView: getItem(): " + getItem(position));
         Log.d(TAG, "getView: LIST COUNT: " + getCount());
 
+
         if(view == null){
             Log.d(TAG, "getView: view == null passed");
             
@@ -78,13 +82,37 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
         TextView listItemText = (TextView)view.findViewById(R.id.list_item_text);
         listItemText.setText(list.get(position).getTaskName());
 
-        CheckBox cb = (CheckBox)view.findViewById(R.id.list_checkbox);
-        cb.setChecked(list.get(position).isNotification());
+        //Sets if the checkbox is checked based on notification status
+        CheckBox notifyCheckBox = (CheckBox)view.findViewById(R.id.list_checkbox);
+        notifyCheckBox.setChecked(list.get(position).isNotification());
+
+        //Sets task description
+        final TextView taskDescription = (TextView)view.findViewById(R.id.list_item_description);
+        taskDescription.setText(list.get(position).getTaskDescription());
 
         //Button initializer
         Button deleteButton = (Button)view.findViewById(R.id.delete_btn);
         Button editButton = (Button)view.findViewById(R.id.edit_btn);
 
+
+        //When the user clicks on the task name, the description will show, along with any other attributes that will be added later
+        listItemText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (taskDescription.getVisibility() == View.GONE){
+                    taskDescription.setVisibility(View.VISIBLE);
+                }
+
+                else{
+                    taskDescription.setVisibility(View.GONE);
+                }
+
+                //taskDescription.setVisibility(View.GONE);
+
+                Log.i(TAG, "onClick: Item clicked");
+            }
+        });
 
         //Button Handlers
         //Delete button has a confirmation screen to delete the task.
@@ -94,9 +122,11 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
 
                 Log.d(TAG, "onClick: Delete button clicked. Task: " + getItem(position));
 
+
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                 builder.setTitle("Are you sure?");
-                builder.setMessage(getItem(position) + " will be deleted. Are you sure you want to delete it?");
+                builder.setMessage(list.get(position).getTaskName() + " will be deleted. Are you sure you want to delete it?");
                 builder.setCancelable(true);
 
                 final int positionToDelete = position;
