@@ -1,6 +1,7 @@
 package com.example.mobileappproject;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.util.Log;
@@ -9,20 +10,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
+
 
 //@Todo
 //  Change the ArrayList<String> parameter to ArrayList<Task> when the Task class is set up.
@@ -57,7 +56,6 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
     //Leave this as return 0
     @Override
     public long getItemId(int position) {
-        //return list.get(position).getId();
         return 0;
     }
 
@@ -117,7 +115,6 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
         Log.i(TAG, "getView: Date is: " + date);
 
 
-
         //When the user clicks on the task name, the description will show, along with any other attributes that will be added later
         listItemText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,8 +129,6 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
                     taskDateTime.setVisibility(View.GONE);
 
                 }
-
-                //taskDescription.setVisibility(View.GONE);
 
                 Log.i(TAG, "onClick: Item clicked");
             }
@@ -176,50 +171,87 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
         });
 
 
-        //Edit button
+        //Edit button onClick
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final Dialog dialog = new Dialog(v.getContext());
+                dialog.setContentView(R.layout.custom_add_dialog);
+                dialog.setTitle("Edit " + list.get(position).getTaskName());
 
-                Log.d(TAG, "onClick: Edit button clicked.");
+                final EditText taskName = (EditText) dialog.findViewById(R.id.dialogInput);
+                taskName.setText(list.get(position).getTaskName());
 
-                notifyDataSetChanged();
+                final EditText taskDesc = (EditText) dialog.findViewById(R.id.dialogDesc);
+                taskDesc.setText(list.get(position).getTaskDescription());
+
+                final CheckBox taskNotify = (CheckBox) dialog.findViewById(R.id.dialog_notify);
+                taskNotify.setChecked(list.get(position).isNotification());
+
+                Button dialogOkBtn = (Button) dialog.findViewById(R.id.dialogOk);
+                dialogOkBtn.setText("Confirm");
+
+                Button dialogCancel = (Button) dialog.findViewById(R.id.dialogCancel);
+
+                final DatePicker datePicker = (DatePicker) dialog.findViewById(R.id.datePicker);
+                datePicker.setMinDate(System.currentTimeMillis() - 1000);                           //Sets the minimum date to the current date
+
+
+                final TimePicker timePicker = (TimePicker) dialog.findViewById(R.id.timePicker);
+
+
+                //The on-click listener for the pop-up dialog's confirm button
+                dialogOkBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+
+                        if (taskName.getText().toString().length() > 0) {
+
+                            list.get(position).setTaskName(taskName.getText().toString());
+                            list.get(position).setTaskDescription(taskDesc.getText().toString());
+                            list.get(position).setNotification(taskNotify.isChecked());
+                            list.get(position).setHour(timePicker.getHour());
+                            list.get(position).setMinute(timePicker.getMinute());
+                            list.get(position).setMonth(datePicker.getMonth());
+                            list.get(position).setDay(datePicker.getDayOfMonth());
+                            list.get(position).setYear(datePicker.getYear());
+
+
+                            notifyDataSetChanged();
+
+
+                            Log.i(TAG, "onClick: Task edited.");
+
+                            dialog.dismiss();
+                        }
+
+                        //Gives an error if there is no task name
+                        else {
+                            taskName.setError("Cannot be blank!");
+                        }
+                    }
+                });
+
+                //Dismisses the dialog
+                dialogCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+
+                        Log.i(TAG, "onClick: Dialog dismissed.");
+                    }
+                });
+
+                dialog.show();
+
+                Log.i(TAG, "onClick: Dialog shown.");
             }
         });
 
         return view;
     }
 
-
-    //@TODO
-    //  This is probably where we will add more task attributes.
-    /*
-    public void addItem(String task, boolean notify){
-
-        Log.d(TAG, "addItem: called. WITHOUT DESCRIPTION");
-
-
-        list.add(task);
-
-        notifyDataSetChanged();
-
-        Log.i(TAG, "addItem: completed. Task added.");
-
-    }
-
-    public void addItem(String task, String desc, boolean notify){
-
-        Log.d(TAG, "addItem: called. WITH DESCRIPTION");
-
-
-
-
-        list.add(task);
-        notifyDataSetChanged();
-
-        Log.i(TAG, "addItem: completed. Task added.");
-
-    }*/
 
     public void addItem(Task task) {
 

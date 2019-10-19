@@ -27,7 +27,6 @@ public class TasksFragment extends Fragment {
     private static final String TAG = "TasksFragment";
 
     ListView listView;
-    //ArrayAdapter adapter;
 
     //@TODO:
     //  Create an array of tasks somehow that the user will be able to add/edit/remove.
@@ -99,8 +98,6 @@ public class TasksFragment extends Fragment {
 
                 final TimePicker timePicker = (TimePicker) dialog.findViewById(R.id.timePicker);
 
-                final CheckBox cb = (CheckBox) dialog.findViewById(R.id.list_checkbox);
-
                 //The on-click listener for the pop-up dialog's confirm button
                 dialogOkBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -115,8 +112,7 @@ public class TasksFragment extends Fragment {
 
                             adapter.addItem(task);
 
-
-
+                            
                             Log.i(TAG, "onClick: Task added WITHOUT description. Notifications = " + task.isNotification()
                             + "\nThe tasks hour is: " + task.getHour() + " | The minute is: " + task.getMinute());
 
@@ -165,6 +161,4 @@ public class TasksFragment extends Fragment {
 
         return view;
     }
-
-
 }
