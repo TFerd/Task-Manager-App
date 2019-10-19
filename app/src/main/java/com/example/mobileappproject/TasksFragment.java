@@ -1,11 +1,22 @@
 package com.example.mobileappproject;
 
 
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.media.RingtoneManager;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -112,9 +123,11 @@ public class TasksFragment extends Fragment {
 
                             adapter.addItem(task);
 
-                            
+
                             Log.i(TAG, "onClick: Task added WITHOUT description. Notifications = " + task.isNotification()
                             + "\nThe tasks hour is: " + task.getHour() + " | The minute is: " + task.getMinute());
+
+                            scheduleNotification(task.getTaskName(), 3500);
 
                             dialog.dismiss();
                         }
@@ -161,4 +174,58 @@ public class TasksFragment extends Fragment {
 
         return view;
     }
+
+    //*******************************************************************************
+    //***************************** NOTIFICATION METHOD *****************************               //Edit stuff here for the notification when the time comes
+    //*******************************************************************************
+    private void scheduleNotification(String taskName, int delay){
+
+        Log.i(TAG, "scheduleNotification: Called");
+
+        Notification.Builder builder;
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            NotificationManager notificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+
+            NotificationChannel notificationChannel = new NotificationChannel("default", "name", NotificationManager.IMPORTANCE_HIGH);
+            notificationChannel.setDescription("description");
+            notificationChannel.enableVibration(true);
+            notificationManager.createNotificationChannel(notificationChannel);
+
+
+            builder = new Notification.Builder(getContext(), "default");
+
+            Log.i(TAG, "scheduleNotification: SDK is 26 or greater. Using notification channel: " + notificationChannel.getName());
+        }
+        else{
+            builder = new Notification.Builder(getContext());
+
+            Log.i(TAG, "scheduleNotification: SDK is lower than 26");
+        }
+
+        builder.setContentTitle("Title");
+        builder.setContentText(taskName + " notiictaion");
+        builder.setSmallIcon(R.drawable.add_circle);
+
+        Notification notification = builder.build();
+
+        Intent notificationIntent = new Intent(getContext(), NotificationPublisher.class);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        long timeTilNotif = SystemClock.elapsedRealtime() + delay;
+        Log.i(TAG, "scheduleNotification: Time before notif: " + timeTilNotif);
+
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, timeTilNotif, pendingIntent);
+
+        Log.i(TAG, "scheduleNotification: Completed");
+
+    }
+
+
 }
