@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -8,10 +9,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:paddingLeft="8dp"
-        android:textSize="18sp"
-        android:text="Task Text"
+        android:layout_margin="5dp"
         android:clickable="true"
+        android:paddingLeft="8dp"
+        android:paddingTop="3dp"
+        android:text="Task Text"
+        android:textSize="18sp"
 
         />
 
@@ -19,10 +22,12 @@
         android:id="@+id/list_notify_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/add_dialog_notif"
+        android:layout_margin="5dp"
         android:layout_toLeftOf="@id/list_checkbox"
-        android:textSize="18sp"
         android:padding="2dp"
+        android:paddingTop="3dp"
+        android:text="@string/add_dialog_notif"
+        android:textSize="18sp"
 
         />
 
@@ -30,47 +35,74 @@
         android:id="@+id/list_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="false"
-        android:checked="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="10dp"
         android:layout_toLeftOf="@id/edit_btn"
+        android:checked="true"
+        android:clickable="false"
 
 
         />
 
-    <Button
+
+    <ImageButton
+        android:id="@+id/edit_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_toLeftOf="@id/delete_btn"
+        android:background="@android:color/transparent"
+        android:text="@string/edit_button"
+        android:tint="#4CAF50"
+        android:src="@android:drawable/ic_menu_edit" />
+
+
+    <ImageButton
         android:id="@+id/delete_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="@android:color/transparent"
+        android:src="@android:drawable/ic_menu_delete"
         android:text="@string/delete_button"
+        android:tint="#DA0000" />
 
-        />
 
-    <Button
-        android:id="@+id/edit_btn"
-        android:layout_width="wrap_content"
+
+
+    <TextView
+        android:id="@+id/list_item_datetime"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/delete_btn"
-        android:layout_marginRight="10dp"
-        android:text="@string/edit_button"
+        android:gravity="center"
+        android:layout_below="@id/list_notify_text"
+        android:text="DateTime"
+        android:layout_margin="20dp"
+        android:textSize="24sp"
+        android:visibility="gone"
         />
 
     <TextView
         android:id="@+id/list_item_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:singleLine="false"
-        android:layout_below="@id/list_notify_text"
-        android:text="TASK DESCRIPTION"
+        android:layout_below="@id/list_item_datetime"
         android:layout_centerHorizontal="true"
+        android:layout_margin="5dp"
         android:paddingTop="30dp"
-        android:layout_margin="10dp"
+        android:singleLine="false"
+        android:text="TASK DESCRIPTION"
         android:textSize="16sp"
         android:visibility="gone"
 
         />
-
 
 
 </RelativeLayout>

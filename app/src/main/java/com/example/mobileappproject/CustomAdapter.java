@@ -9,12 +9,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CalendarView;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 //@Todo
 //  Change the ArrayList<String> parameter to ArrayList<Task> when the Task class is set up.
@@ -31,10 +39,7 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
     private Context context;
 
 
-
-
-
-    public CustomAdapter(ArrayList<Task> list, Context context){
+    public CustomAdapter(ArrayList<Task> list, Context context) {
         this.list = list;
         this.context = context;
     }
@@ -65,13 +70,13 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
         Log.d(TAG, "getView: LIST COUNT: " + getCount());
 
 
-        if(view == null){
+        if (view == null) {
             Log.d(TAG, "getView: view == null passed");
-            
+
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.custom_list_layout, null);
 
-            
+
             Log.i(TAG, "getView: View inflated successfully");
         }
 
@@ -79,20 +84,38 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
         //**********THIS IS WHERE YOU CAN EDIT THE ListView XML ITEMS***************
         //**************************************************************************
         //Displays the String from the List
-        TextView listItemText = (TextView)view.findViewById(R.id.list_item_text);
+        TextView listItemText = (TextView) view.findViewById(R.id.list_item_text);
         listItemText.setText(list.get(position).getTaskName());
 
         //Sets if the checkbox is checked based on notification status
-        CheckBox notifyCheckBox = (CheckBox)view.findViewById(R.id.list_checkbox);
+        CheckBox notifyCheckBox = (CheckBox) view.findViewById(R.id.list_checkbox);
         notifyCheckBox.setChecked(list.get(position).isNotification());
 
         //Sets task description
-        final TextView taskDescription = (TextView)view.findViewById(R.id.list_item_description);
+        final TextView taskDescription = (TextView) view.findViewById(R.id.list_item_description);
         taskDescription.setText(list.get(position).getTaskDescription());
 
         //Button initializer
-        Button deleteButton = (Button)view.findViewById(R.id.delete_btn);
-        Button editButton = (Button)view.findViewById(R.id.edit_btn);
+        ImageButton deleteButton = (ImageButton) view.findViewById(R.id.delete_btn);
+        ImageButton editButton = (ImageButton) view.findViewById(R.id.edit_btn);
+
+        //Calendar builds the date and time which is set to the textView
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, list.get(position).getYear());
+        calendar.set(Calendar.MONTH, list.get(position).getMonth());
+        calendar.set(Calendar.DAY_OF_MONTH, list.get(position).getDay());
+        calendar.set(Calendar.HOUR, list.get(position).getHour());
+        calendar.set(Calendar.MINUTE, list.get(position).getMinute());
+        calendar.set(Calendar.AM_PM, Calendar.AM);
+
+        SimpleDateFormat dtFormat = new SimpleDateFormat("EEE, d MMM yyyy \nhh:mm aaa");
+        String date = dtFormat.format(calendar.getTime());
+
+        final TextView taskDateTime = (TextView) view.findViewById(R.id.list_item_datetime);
+        taskDateTime.setText(date);
+
+        Log.i(TAG, "getView: Date is: " + date);
+
 
 
         //When the user clicks on the task name, the description will show, along with any other attributes that will be added later
@@ -100,12 +123,14 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
             @Override
             public void onClick(View v) {
 
-                if (taskDescription.getVisibility() == View.GONE){
+                if (taskDescription.getVisibility() == View.GONE) {
                     taskDescription.setVisibility(View.VISIBLE);
-                }
+                    taskDateTime.setVisibility(View.VISIBLE);
 
-                else{
+                } else {
                     taskDescription.setVisibility(View.GONE);
+                    taskDateTime.setVisibility(View.GONE);
+
                 }
 
                 //taskDescription.setVisibility(View.GONE);
@@ -121,7 +146,6 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
             public void onClick(View v) {
 
                 Log.d(TAG, "onClick: Delete button clicked. Task: " + getItem(position));
-
 
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
@@ -196,8 +220,8 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
         Log.i(TAG, "addItem: completed. Task added.");
 
     }*/
-    
-    public void addItem(Task task){
+
+    public void addItem(Task task) {
 
         list.add(task);
         notifyDataSetChanged();

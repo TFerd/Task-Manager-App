@@ -11,13 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
-
 public class CalendarFragment extends Fragment {
 
     private static final String TAG = "CalendarFragment";
 
 
-    public CalendarFragment(){
+    public CalendarFragment() {
         Log.d(TAG, "constructed.");
     }
 
