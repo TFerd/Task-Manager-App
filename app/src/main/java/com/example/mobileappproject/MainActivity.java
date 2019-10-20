@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     ViewPager myPager;
 
     PagerController myPagerController;
-    
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Log.d(TAG, "started.");
+        //Log.i(TAG, "onCreate: Instance state: " + savedInstanceState.toString());
 
         //Toolbar
         myToolbar = (Toolbar)findViewById(R.id.toolbar);

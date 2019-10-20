@@ -31,6 +31,8 @@ import android.widget.TimePicker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 
 public class TasksFragment extends Fragment {
@@ -127,7 +129,13 @@ public class TasksFragment extends Fragment {
                             Log.i(TAG, "onClick: Task added WITHOUT description. Notifications = " + task.isNotification()
                             + "\nThe tasks hour is: " + task.getHour() + " | The minute is: " + task.getMinute());
 
-                            scheduleNotification(task.getTaskName(), 3500);
+                            //scheduleNotification(task.getTaskName(), 3500);
+                            //scheduleNotification(task);
+
+                            //Adds a notification ONLY if notifications are checked
+                            if (task.isNotification()){
+                                scheduleNotification(task);
+                            }
 
                             dialog.dismiss();
                         }
@@ -145,6 +153,14 @@ public class TasksFragment extends Fragment {
 
                             Log.i(TAG, "onClick: Task added WITH description. Notifications = " + task.isNotification()
                             + "\nThe tasks hour is: " + task.getHour() + " | The minute is: " + task.getMinute());
+
+                            //scheduleNotification(task.getTaskName(), 3500);
+                            //scheduleNotification(task);
+
+                            //Adds a notification ONLY if notifications are checked
+                            if (task.isNotification()){
+                                scheduleNotification(task);
+                            }
 
                             dialog.dismiss();
                         }
@@ -178,7 +194,10 @@ public class TasksFragment extends Fragment {
     //*******************************************************************************
     //***************************** NOTIFICATION METHOD *****************************               //Edit stuff here for the notification when the time comes
     //*******************************************************************************
-    private void scheduleNotification(String taskName, int delay){
+    //@TODO
+    //  Make it so if the user chooses NO notifications, and then edits to say YES notifications, it will
+    //  call the notification.
+    private void scheduleNotification(Task task){
 
         Log.i(TAG, "scheduleNotification: Called");
 
@@ -206,7 +225,7 @@ public class TasksFragment extends Fragment {
         }
 
         builder.setContentTitle("Title");
-        builder.setContentText(taskName + " notiictaion");
+        builder.setContentText(task.getTaskName() + " notiictaion");
         builder.setSmallIcon(R.drawable.add_circle);
 
         Notification notification = builder.build();
@@ -214,17 +233,34 @@ public class TasksFragment extends Fragment {
         Intent notificationIntent = new Intent(getContext(), NotificationPublisher.class);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
+        notificationIntent.putExtra("task", task);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        long timeTilNotif = SystemClock.elapsedRealtime() + delay;
+        //long timeTilNotif = SystemClock.elapsedRealtime() + delay;
+        long timeTilNotif = SystemClock.elapsedRealtime() + calcTime(task);
+
         Log.i(TAG, "scheduleNotification: Time before notif: " + timeTilNotif);
+        Date d = new Date(timeTilNotif);
+        Log.i(TAG, "scheduleNotification: Date is: " + d);
 
         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, timeTilNotif, pendingIntent);
 
         Log.i(TAG, "scheduleNotification: Completed");
 
+    }
+
+
+    private long calcTime(Task task){
+
+        long time = 0;
+
+        time = task.getDate() - Calendar.getInstance().getTimeInMillis();
+
+        Log.i(TAG, "calcTime: The elapsed time is: " + time);
+
+        return time;
     }
 
 

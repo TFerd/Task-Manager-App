@@ -19,7 +19,8 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:hint="@string/add_dialog_desc"
-        android:singleLine="false"
+        android:singleLine="true"
+        android:inputType="text"
 
 
         />

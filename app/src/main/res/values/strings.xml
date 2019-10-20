@@ -9,7 +9,7 @@
     <string name="delete_button">Delete</string>
     <string name="cancel_button">Cancel</string>
     <string name="add_dialog_hint">Enter task name</string>
-    <string name="add_dialog_desc">Enter task description (Optional)</string>
+    <string name="add_dialog_desc">Enter description (Optional)</string>
     <string name="add_dialog_notif">Notify?</string>
 
 
