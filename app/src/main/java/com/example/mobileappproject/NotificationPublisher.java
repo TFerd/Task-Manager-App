@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import android.os.Bundle;
 import android.util.Log;
 
 import java.io.Serializable;
@@ -24,8 +25,11 @@ public class NotificationPublisher extends BroadcastReceiver {
 
         Log.i(TAG, "onReceive: Called");
 
-        //Receives the Task from the intent
-        Task task = (Task) intent.getSerializableExtra("task");
+
+        //Receives the Task from the intent as a bundle
+        //Task task = (Task) intent.getSerializableExtra("TASK");
+        Bundle receiveBundle = intent.getBundleExtra("DATA");
+        Task task = (Task)receiveBundle.getSerializable("taskobj");
 
         Log.i(TAG, "onReceive: Tasks notifications are set to: " + task.isNotification());
 
@@ -49,8 +53,12 @@ public class NotificationPublisher extends BroadcastReceiver {
             Log.i(TAG, "onReceive: Task received is taskName: " + task.getTaskName());
 
             //Sets the Task as notified
+            task.setHasBeenNotified(true);
 
             Log.i(TAG, "onReceive: Finished");
+        }
+        else {
+            Log.i(TAG, "onReceive: isNotification is false.");
         }
     }
 

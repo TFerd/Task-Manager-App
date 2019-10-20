@@ -30,6 +30,7 @@ import android.widget.TimePicker;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -135,6 +136,8 @@ public class TasksFragment extends Fragment {
                             //Adds a notification ONLY if notifications are checked
                             if (task.isNotification()){
                                 scheduleNotification(task);
+
+                                Log.i(TAG, "onClick: Notification is " + task.isNotification() + ", notification scheduled...");
                             }
 
                             dialog.dismiss();
@@ -160,6 +163,8 @@ public class TasksFragment extends Fragment {
                             //Adds a notification ONLY if notifications are checked
                             if (task.isNotification()){
                                 scheduleNotification(task);
+
+                                Log.i(TAG, "onClick: Notification is " + task.isNotification() + ", notification scheduled...");
                             }
 
                             dialog.dismiss();
@@ -233,11 +238,15 @@ public class TasksFragment extends Fragment {
         Intent notificationIntent = new Intent(getContext(), NotificationPublisher.class);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
-        notificationIntent.putExtra("task", task);
+        //notificationIntent.putExtra("TASK", task);
+        //The Bundle is for passing the task to the NotificationPublisher so that it can edit the task once the notification happens.
+        Bundle taskBundle = new Bundle();
+        taskBundle.putSerializable("taskobj", (Serializable) task);
+        notificationIntent.putExtra("DATA", taskBundle);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        //long timeTilNotif = SystemClock.elapsedRealtime() + delay;
+        
         long timeTilNotif = SystemClock.elapsedRealtime() + calcTime(task);
 
         Log.i(TAG, "scheduleNotification: Time before notif: " + timeTilNotif);
