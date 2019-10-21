@@ -23,8 +23,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 
-//@Todo
-//  Change the ArrayList<String> parameter to ArrayList<Task> when the Task class is set up.
 
 //*********************************************************************
 //* CustomAdapter class is for the ListView in the TaskFragment class *
@@ -104,6 +102,7 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
         calendar.set(Calendar.DAY_OF_MONTH, list.get(position).getDay());
         calendar.set(Calendar.HOUR, list.get(position).getHour());
         calendar.set(Calendar.MINUTE, list.get(position).getMinute());
+        calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.AM_PM, Calendar.AM);
 
         SimpleDateFormat dtFormat = new SimpleDateFormat("EEE, d MMM yyyy \nhh:mm aaa");
@@ -171,6 +170,8 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
         });
 
 
+        //@TODO
+        //  Add a way to change when the notification will appear if the task is edited.
         //Edit button onClick
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override

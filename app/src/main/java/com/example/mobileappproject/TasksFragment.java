@@ -83,7 +83,7 @@ public class TasksFragment extends Fragment {
 
 
         //@TODO
-        //  Add more options to the FAB, maybe like delete all? Or maybe dont add anything to it at all lol
+        //  Add more options to the FAB, maybe like delete all? Or maybe don't add anything to it at all lol
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.addFAB);
 
 
@@ -112,6 +112,9 @@ public class TasksFragment extends Fragment {
 
                 final TimePicker timePicker = (TimePicker) dialog.findViewById(R.id.timePicker);
 
+                //@TODO
+                //  Dissolve the if statement for the description so that only one constructor is needed.
+                //  Honestly this is really easy and i should have done it before but idk.
                 //The on-click listener for the pop-up dialog's confirm button
                 dialogOkBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -161,7 +164,7 @@ public class TasksFragment extends Fragment {
                             //scheduleNotification(task);
 
                             //Adds a notification ONLY if notifications are checked
-                            if (task.isNotification()){
+                            if (task.isNotification() == true){
                                 scheduleNotification(task);
 
                                 Log.i(TAG, "onClick: Notification is " + task.isNotification() + ", notification scheduled...");
@@ -202,6 +205,7 @@ public class TasksFragment extends Fragment {
     //@TODO
     //  Make it so if the user chooses NO notifications, and then edits to say YES notifications, it will
     //  call the notification.
+    //  Also, add more notifications for a task. (Remind 1 hour before or 30 minutes before etc.)
     private void scheduleNotification(Task task){
 
         Log.i(TAG, "scheduleNotification: Called");
@@ -214,7 +218,7 @@ public class TasksFragment extends Fragment {
             NotificationManager notificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
             NotificationChannel notificationChannel = new NotificationChannel("default", "name", NotificationManager.IMPORTANCE_HIGH);
-            notificationChannel.setDescription("description");
+            notificationChannel.setDescription("Default notification channel.");
             notificationChannel.enableVibration(true);
             notificationManager.createNotificationChannel(notificationChannel);
 
@@ -229,9 +233,12 @@ public class TasksFragment extends Fragment {
             Log.i(TAG, "scheduleNotification: SDK is lower than 26");
         }
 
-        builder.setContentTitle("Title");
-        builder.setContentText(task.getTaskName() + " notiictaion");
-        builder.setSmallIcon(R.drawable.add_circle);
+        //builder.setContentTitle("Title");
+        //builder.setContentText(task.getTaskName() + " notification");
+        builder.setContentTitle("Reminder!");
+        builder.setContentText(task.getTaskName() + " is scheduled for now!");
+
+        builder.setSmallIcon(R.drawable.ic_alarm_black_24dp);
 
         Notification notification = builder.build();
 
@@ -241,12 +248,12 @@ public class TasksFragment extends Fragment {
         //notificationIntent.putExtra("TASK", task);
         //The Bundle is for passing the task to the NotificationPublisher so that it can edit the task once the notification happens.
         Bundle taskBundle = new Bundle();
-        taskBundle.putSerializable("taskobj", (Serializable) task);
+        taskBundle.putSerializable("taskKey", (Serializable) task);
         notificationIntent.putExtra("DATA", taskBundle);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        
+
         long timeTilNotif = SystemClock.elapsedRealtime() + calcTime(task);
 
         Log.i(TAG, "scheduleNotification: Time before notif: " + timeTilNotif);
@@ -256,7 +263,10 @@ public class TasksFragment extends Fragment {
         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, timeTilNotif, pendingIntent);
 
+        Log.i(TAG, "scheduleNotification: Task hasBeenNotified pre-notification (Should return false): " + task.hasBeenNotified());
+
         Log.i(TAG, "scheduleNotification: Completed");
+
 
     }
 

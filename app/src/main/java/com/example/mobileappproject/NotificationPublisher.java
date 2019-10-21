@@ -29,9 +29,11 @@ public class NotificationPublisher extends BroadcastReceiver {
         //Receives the Task from the intent as a bundle
         //Task task = (Task) intent.getSerializableExtra("TASK");
         Bundle receiveBundle = intent.getBundleExtra("DATA");
-        Task task = (Task)receiveBundle.getSerializable("taskobj");
+        Task task = (Task)receiveBundle.getSerializable("taskKey");
 
         Log.i(TAG, "onReceive: Tasks notifications are set to: " + task.isNotification());
+
+        Log.i(TAG, "onReceive: Task hasBeenNotified pre-notification (Should return false): " + task.hasBeenNotified());
 
         //Checks if the notification is still true for the task
         if (task.isNotification()) {
@@ -54,6 +56,8 @@ public class NotificationPublisher extends BroadcastReceiver {
 
             //Sets the Task as notified
             task.setHasBeenNotified(true);
+
+            Log.i(TAG, "onReceive: Task hasBeenNotified post-notification (Should return true): " + task.hasBeenNotified());
 
             Log.i(TAG, "onReceive: Finished");
         }
