@@ -206,6 +206,7 @@ public class TasksFragment extends Fragment {
     //  Make it so if the user chooses NO notifications, and then edits to say YES notifications, it will
     //  call the notification.
     //  Also, add more notifications for a task. (Remind 1 hour before or 30 minutes before etc.)
+    //  Also, add the ability to take the user back to the app when the notification is clicked.
     private void scheduleNotification(Task task){
 
         Log.i(TAG, "scheduleNotification: Called");
@@ -271,6 +272,10 @@ public class TasksFragment extends Fragment {
     }
 
 
+    //This method calculates the time before the notification arrives.
+    //Currently it just subtracts the date of the task to the current time to figure out the time buffer before the notification.
+    //I think this function can be improved, as of right now, it doesn't notify the user right when the clock hits a certain minute.
+    //If the task is scheduled for the next minute, then it will wait all 60 seconds before notifying, rather than notifying right when the clock hits the next minute.
     private long calcTime(Task task){
 
         long time = 0;
