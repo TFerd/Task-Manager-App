@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 
+//@Todo
+//  Change the ArrayList<String> parameter to ArrayList<Task> when the Task class is set up.
 
 //*********************************************************************
 //* CustomAdapter class is for the ListView in the TaskFragment class *
@@ -34,11 +37,13 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
 
     private ArrayList<Task> list;
     private Context context;
+    public DBSQLiteOpenHelper db;
 
 
     public CustomAdapter(ArrayList<Task> list, Context context) {
         this.list = list;
         this.context = context;
+        db = new DBSQLiteOpenHelper(context);
     }
 
     @Override
@@ -95,14 +100,20 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
         ImageButton deleteButton = (ImageButton) view.findViewById(R.id.delete_btn);
         ImageButton editButton = (ImageButton) view.findViewById(R.id.edit_btn);
 
+        int year = list.get(position).getYear();
+        int month = list.get(position).getMonth();
+        int day = list.get(position).getDay();
+        int hour = list.get(position).getHour();
+        int minute = list.get(position).getMinute();
+
+
         //Calendar builds the date and time which is set to the textView
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, list.get(position).getYear());
-        calendar.set(Calendar.MONTH, list.get(position).getMonth());
-        calendar.set(Calendar.DAY_OF_MONTH, list.get(position).getDay());
-        calendar.set(Calendar.HOUR, list.get(position).getHour());
-        calendar.set(Calendar.MINUTE, list.get(position).getMinute());
-        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+        calendar.set(Calendar.HOUR, hour);
+        calendar.set(Calendar.MINUTE, minute);
         calendar.set(Calendar.AM_PM, Calendar.AM);
 
         SimpleDateFormat dtFormat = new SimpleDateFormat("EEE, d MMM yyyy \nhh:mm aaa");
@@ -170,12 +181,11 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
         });
 
 
-        //@TODO
-        //  Add a way to change when the notification will appear if the task is edited.
         //Edit button onClick
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 final Dialog dialog = new Dialog(v.getContext());
                 dialog.setContentView(R.layout.custom_add_dialog);
                 dialog.setTitle("Edit " + list.get(position).getTaskName());
@@ -209,14 +219,26 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
 
                         if (taskName.getText().toString().length() > 0) {
 
-                            list.get(position).setTaskName(taskName.getText().toString());
-                            list.get(position).setTaskDescription(taskDesc.getText().toString());
-                            list.get(position).setNotification(taskNotify.isChecked());
-                            list.get(position).setHour(timePicker.getHour());
-                            list.get(position).setMinute(timePicker.getMinute());
-                            list.get(position).setMonth(datePicker.getMonth());
-                            list.get(position).setDay(datePicker.getDayOfMonth());
-                            list.get(position).setYear(datePicker.getYear());
+                            String name = taskName.getText().toString();
+                            String desc = taskDesc.getText().toString();
+                            boolean notify = taskNotify.isChecked();
+                            int hour = timePicker.getHour();
+                            int minute = timePicker.getMinute();
+                            int month = datePicker.getMonth();
+                            int year = datePicker.getYear();
+                            int day = datePicker.getDayOfMonth();
+
+
+                            list.get(position).setTaskName(name);
+                            list.get(position).setTaskDescription(desc);
+                            list.get(position).setNotification(notify);
+                            list.get(position).setHour(hour);
+                            list.get(position).setMinute(minute);
+                            list.get(position).setMonth(month);
+                            list.get(position).setDay(day);
+                            list.get(position).setYear(year);
+
+
 
 
                             notifyDataSetChanged();

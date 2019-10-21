@@ -1,20 +1,17 @@
 package com.example.mobileappproject;
 
-import java.io.Serializable;
-import java.util.Calendar;
+public class Task {
 
-public class Task implements Serializable {      //The serializable basically means it can be passed through an Intent, which is important when setting up notifications
+    //@TODO
+    //  Add more attributes (variables)
+    //  Find a way to add these to the ListView, also make sure the plus arrow button (to add more tasks) will show up at the bottom of the ListView if there are tasks present.
 
-
-    private String taskName, taskDescription;
-    private int hour,minute;
-    private int month, day, year;
+    String taskName, taskDescription;
+    int hour,minute;
+    int month, day, year;
     //location variable
-    private boolean notification;
-    private boolean isComplete;
-    private boolean hasBeenNotified = false;
-
-
+    boolean notification;
+    boolean isComplete;
 
     //Constructor for Task without description
     public Task(String taskName, boolean notification, int hour, int minute, int month, int day, int year){
@@ -120,26 +117,9 @@ public class Task implements Serializable {      //The serializable basically me
         isComplete = false;
     }
 
-    public boolean hasBeenNotified() {
-        return hasBeenNotified;
-    }
-
-    public void setHasBeenNotified(boolean hasBeenNotified) {
-        this.hasBeenNotified = hasBeenNotified;
-    }
-
     public long getDate(){
+
         long date = 0;
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, this.getYear());
-        calendar.set(Calendar.MONTH, this.getMonth());
-        calendar.set(Calendar.DAY_OF_MONTH, this.getDay());
-        calendar.set(Calendar.HOUR, this.getHour());
-        calendar.set(Calendar.MINUTE, this.getMinute());
-        calendar.set(Calendar.AM_PM, Calendar.AM);
-
-        date = calendar.getTimeInMillis();
 
         return date;
     }
