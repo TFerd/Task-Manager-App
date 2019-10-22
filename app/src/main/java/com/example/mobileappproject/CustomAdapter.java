@@ -91,6 +91,8 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
         final TextView taskDescription = (TextView) view.findViewById(R.id.list_item_description);
         taskDescription.setText(list.get(position).getTaskDescription());
 
+        final TextView scheduledForTextView = (TextView) view.findViewById(R.id.scheduled_for_text);
+
         //Button initializer
         ImageButton deleteButton = (ImageButton) view.findViewById(R.id.delete_btn);
         ImageButton editButton = (ImageButton) view.findViewById(R.id.edit_btn);
@@ -122,11 +124,12 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
                 if (taskDescription.getVisibility() == View.GONE) {
                     taskDescription.setVisibility(View.VISIBLE);
                     taskDateTime.setVisibility(View.VISIBLE);
+                    scheduledForTextView.setVisibility(View.VISIBLE);
 
                 } else {
                     taskDescription.setVisibility(View.GONE);
                     taskDateTime.setVisibility(View.GONE);
-
+                    scheduledForTextView.setVisibility(View.GONE);
                 }
 
                 Log.i(TAG, "onClick: Item clicked");
