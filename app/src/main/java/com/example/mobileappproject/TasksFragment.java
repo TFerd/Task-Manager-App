@@ -2,6 +2,7 @@ package com.example.mobileappproject;
 
 
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -9,6 +10,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.media.RingtoneManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -98,6 +100,8 @@ public class TasksFragment extends Fragment {
                 dialog.setContentView(R.layout.custom_add_dialog);
                 dialog.setTitle("Create new task");
 
+                final DBSQLiteOpenHelper db = new DBSQLiteOpenHelper(v.getContext());
+
                 final EditText taskName = (EditText) dialog.findViewById(R.id.dialogInput);
                 final EditText taskDesc = (EditText) dialog.findViewById(R.id.dialogDesc);
 
@@ -120,57 +124,100 @@ public class TasksFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
 
-                        //If the task does NOT have a description
-                        if (taskName.getText().toString().length() > 0 && taskDesc.getText().toString().length() < 1) {
+                        String name = taskName.getText().toString();
+                        String desc = taskDesc.getText().toString();
+                        int hour = timePicker.getHour();
+                        int minute = timePicker.getMinute();
+                        int month = datePicker.getMonth();
+                        int year = datePicker.getYear();
+                        int day = datePicker.getDayOfMonth();
+                        boolean notify = taskNotify.isChecked();
 
-                            Task task = new Task(taskName.getText().toString(), taskNotify.isChecked(),
-                                    timePicker.getHour(), timePicker.getMinute(),
-                                    datePicker.getMonth(), datePicker.getDayOfMonth(), datePicker.getYear());
+                        if(name.length() > 0) {
 
-                            adapter.addItem(task);
+                            //If the task does NOT have a description
+                            if (taskDesc.getText().toString().length() < 1) {
+
+                                Task task = new Task(taskName.getText().toString(), taskNotify.isChecked(),
+                                        timePicker.getHour(), timePicker.getMinute(),
+                                        datePicker.getMonth(), datePicker.getDayOfMonth(), datePicker.getYear());
+
+                                adapter.addItem(task);
 
 
-                            Log.i(TAG, "onClick: Task added WITHOUT description. Notifications = " + task.isNotification()
-                            + "\nThe tasks hour is: " + task.getHour() + " | The minute is: " + task.getMinute());
+                                Log.i(TAG, "onClick: Task added WITHOUT description. Notifications = " + task.isNotification()
+                                        + "\nThe tasks hour is: " + task.getHour() + " | The minute is: " + task.getMinute());
 
-                            //scheduleNotification(task.getTaskName(), 3500);
-                            //scheduleNotification(task);
+                                //scheduleNotification(task.getTaskName(), 3500);
+                                //scheduleNotification(task);
 
-                            //Adds a notification ONLY if notifications are checked
-                            if (task.isNotification()){
-                                scheduleNotification(task);
+                                //Adds a notification ONLY if notifications are checked
+                                if (task.isNotification()) {
+                                    scheduleNotification(task);
 
-                                Log.i(TAG, "onClick: Notification is " + task.isNotification() + ", notification scheduled...");
+                                    Log.i(TAG, "onClick: Notification is " + task.isNotification() + ", notification scheduled...");
+                                }
+
+                                dialog.dismiss();
                             }
 
-                            dialog.dismiss();
-                        }
+                            //If the task DOES have a description
+                            else if (taskDesc.getText().toString().length() > 0) {
 
-                        //If the task DOES have a description
-                        else if (taskName.getText().toString().length() > 0 && taskDesc.getText().toString().length() > 0) {
-
-                            Task task = new Task(taskName.getText().toString(), taskDesc.getText().toString(), taskNotify.isChecked(),
-                                    timePicker.getHour(), timePicker.getMinute(),
-                                    datePicker.getMonth(), datePicker.getDayOfMonth(), datePicker.getYear());
+                                Task task = new Task(taskName.getText().toString(), taskDesc.getText().toString(), taskNotify.isChecked(),
+                                        timePicker.getHour(), timePicker.getMinute(),
+                                        datePicker.getMonth(), datePicker.getDayOfMonth(), datePicker.getYear());
 
 
-                            adapter.addItem(task);
+                                adapter.addItem(task);
 
 
-                            Log.i(TAG, "onClick: Task added WITH description. Notifications = " + task.isNotification()
-                            + "\nThe tasks hour is: " + task.getHour() + " | The minute is: " + task.getMinute());
+                                Log.i(TAG, "onClick: Task added WITH description. Notifications = " + task.isNotification()
+                                        + "\nThe tasks hour is: " + task.getHour() + " | The minute is: " + task.getMinute());
 
-                            //scheduleNotification(task.getTaskName(), 3500);
-                            //scheduleNotification(task);
+                                //scheduleNotification(task.getTaskName(), 3500);
+                                //scheduleNotification(task);
 
-                            //Adds a notification ONLY if notifications are checked
-                            if (task.isNotification() == true){
-                                scheduleNotification(task);
+                                //Adds a notification ONLY if notifications are checked
+                                if (task.isNotification() == true) {
+                                    scheduleNotification(task);
 
-                                Log.i(TAG, "onClick: Notification is " + task.isNotification() + ", notification scheduled...");
+                                    Log.i(TAG, "onClick: Notification is " + task.isNotification() + ", notification scheduled...");
+                                }
+
+                                dialog.dismiss();
                             }
 
-                            dialog.dismiss();
+                            // Add task to database
+                            db.insertData(name, desc, hour, minute, month, day, year, notify, false);
+
+                            /*
+                                OUTPUTS STORED DATA, NOT NECESSARY TO RUN PROGRAM, DELETE AFTER DEBUGGING
+                             */
+                            Cursor res = db.getAllData();
+                            if (res.getCount() == 0)
+                                return;
+
+                            StringBuffer buffer = new StringBuffer();
+                            while (res.moveToNext()) {
+                                buffer.append("id: " + res.getString(0) + "\n");
+                                buffer.append("taskname: " + res.getString(1) + "\n");
+                                buffer.append("task description: " + res.getString(2) + "\n");
+                                buffer.append("hour: " + res.getString(3) + "\n");
+                                buffer.append("minute: " + res.getString(4) + "\n");
+                                buffer.append("month: " + res.getString(5) + "\n");
+                                buffer.append("day: " + res.getString(6) + "\n");
+                                buffer.append("year: " + res.getString(7) + "\n");
+                                buffer.append("notify: " + res.getString(8) + "\n");
+                                buffer.append("complete: " + res.getString(9) + "\n");
+                                buffer.append("\n");
+                            }
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                            builder.setCancelable(true);
+                            builder.setTitle("Data");
+                            builder.setMessage(buffer);
+                            builder.show();
                         }
 
                         //Gives an error if there is no task name
