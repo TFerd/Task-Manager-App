@@ -74,7 +74,11 @@ public class TasksFragment extends Fragment {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_tasks, container, false);
 
+        final DBSQLiteOpenHelper db = new DBSQLiteOpenHelper(view.getContext());
+
         taskArray = new ArrayList<>();
+
+        taskArray = fillTasks(db);
 
 
         //Now you can use findViewById()
@@ -99,8 +103,6 @@ public class TasksFragment extends Fragment {
                 final Dialog dialog = new Dialog(view.getContext());
                 dialog.setContentView(R.layout.custom_add_dialog);
                 dialog.setTitle("Create new task");
-
-                final DBSQLiteOpenHelper db = new DBSQLiteOpenHelper(v.getContext());
 
                 final EditText taskName = (EditText) dialog.findViewById(R.id.dialogInput);
                 final EditText taskDesc = (EditText) dialog.findViewById(R.id.dialogDesc);
@@ -132,6 +134,37 @@ public class TasksFragment extends Fragment {
                         int year = datePicker.getYear();
                         int day = datePicker.getDayOfMonth();
                         boolean notify = taskNotify.isChecked();
+
+                        // Add task to database
+                        db.insertData(name, desc, hour, minute, month, day, year, notify, false);
+
+                            /*
+                                OUTPUTS STORED DATA, NOT NECESSARY TO RUN PROGRAM, DELETE AFTER DEBUGGING
+                             */
+                        Cursor res = db.getAllData();
+                        if (res.getCount() == 0)
+                            return;
+
+                        StringBuffer buffer = new StringBuffer();
+                        while (res.moveToNext()) {
+                            buffer.append("id: " + res.getString(0) + "\n");
+                            buffer.append("taskname: " + res.getString(1) + "\n");
+                            buffer.append("task description: " + res.getString(2) + "\n");
+                            buffer.append("hour: " + res.getString(3) + "\n");
+                            buffer.append("minute: " + res.getString(4) + "\n");
+                            buffer.append("month: " + res.getString(5) + "\n");
+                            buffer.append("day: " + res.getString(6) + "\n");
+                            buffer.append("year: " + res.getString(7) + "\n");
+                            buffer.append("notify: " + res.getString(8) + "\n");
+                            buffer.append("complete: " + res.getString(9) + "\n");
+                            buffer.append("\n");
+                        }
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                        builder.setCancelable(true);
+                        builder.setTitle("Data");
+                        builder.setMessage(buffer);
+                        builder.show();
 
                         if(name.length() > 0) {
 
@@ -188,36 +221,6 @@ public class TasksFragment extends Fragment {
                                 dialog.dismiss();
                             }
 
-                            // Add task to database
-                            db.insertData(name, desc, hour, minute, month, day, year, notify, false);
-
-                            /*
-                                OUTPUTS STORED DATA, NOT NECESSARY TO RUN PROGRAM, DELETE AFTER DEBUGGING
-                             */
-                            Cursor res = db.getAllData();
-                            if (res.getCount() == 0)
-                                return;
-
-                            StringBuffer buffer = new StringBuffer();
-                            while (res.moveToNext()) {
-                                buffer.append("id: " + res.getString(0) + "\n");
-                                buffer.append("taskname: " + res.getString(1) + "\n");
-                                buffer.append("task description: " + res.getString(2) + "\n");
-                                buffer.append("hour: " + res.getString(3) + "\n");
-                                buffer.append("minute: " + res.getString(4) + "\n");
-                                buffer.append("month: " + res.getString(5) + "\n");
-                                buffer.append("day: " + res.getString(6) + "\n");
-                                buffer.append("year: " + res.getString(7) + "\n");
-                                buffer.append("notify: " + res.getString(8) + "\n");
-                                buffer.append("complete: " + res.getString(9) + "\n");
-                                buffer.append("\n");
-                            }
-
-                            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                            builder.setCancelable(true);
-                            builder.setTitle("Data");
-                            builder.setMessage(buffer);
-                            builder.show();
                         }
 
                         //Gives an error if there is no task name
@@ -332,6 +335,28 @@ public class TasksFragment extends Fragment {
         Log.i(TAG, "calcTime: The elapsed time is: " + time);
 
         return time;
+    }
+
+    private ArrayList<Task> fillTasks(DBSQLiteOpenHelper db) {
+        ArrayList<Task> tasks = new ArrayList<>();
+        Cursor res = db.getAllData();
+        if (res.getCount() == 0) {
+            return tasks;
+        }
+        while (res.moveToNext()) {
+            String name = res.getString(1);
+            String desc = res.getString(2);
+            int hour = res.getInt(3);
+            int minute = res.getInt(4);
+            int month = res.getInt(5);
+            int day = res.getInt(6);
+            int year = res.getInt(7);
+            boolean notify = res.getInt(8) > 0;
+            boolean complete = res.getInt(9) > 0;
+            Task oldtask = new Task(name, desc, notify, hour, minute, month, day, year);
+            tasks.add(oldtask);
+        }
+        return tasks;
     }
 
 
