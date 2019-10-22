@@ -115,6 +115,8 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
 
         Log.i(TAG, "getView: Date is: " + date);
 
+        final DBSQLiteOpenHelper db = new DBSQLiteOpenHelper(view.getContext());
+
 
         //When the user clicks on the task name, the description will show, along with any other attributes that will be added later
         listItemText.setOnClickListener(new View.OnClickListener() {
@@ -159,12 +161,14 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
                 builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        db.deleteData(list.get(positionToDelete).getId() + "");
                         list.remove(positionToDelete);
                         notifyDataSetChanged();
 
                         Log.i(TAG, "onClick: Task " + position + " deleted.");
                     }
                 });
+
 
                 AlertDialog confirmDeleteDialog = builder.create();
                 confirmDeleteDialog.show();

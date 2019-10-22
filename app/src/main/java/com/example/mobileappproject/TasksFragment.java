@@ -145,6 +145,8 @@ public class TasksFragment extends Fragment {
                         if (res.getCount() == 0)
                             return;
 
+                        int id = 0;
+
                         StringBuffer buffer = new StringBuffer();
                         while (res.moveToNext()) {
                             buffer.append("id: " + res.getString(0) + "\n");
@@ -158,6 +160,7 @@ public class TasksFragment extends Fragment {
                             buffer.append("notify: " + res.getString(8) + "\n");
                             buffer.append("complete: " + res.getString(9) + "\n");
                             buffer.append("\n");
+                            id = res.getInt(0);
                         }
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
@@ -171,7 +174,7 @@ public class TasksFragment extends Fragment {
                             //If the task does NOT have a description
                             if (taskDesc.getText().toString().length() < 1) {
 
-                                Task task = new Task(taskName.getText().toString(), taskNotify.isChecked(),
+                                Task task = new Task(id, taskName.getText().toString(), taskNotify.isChecked(),
                                         timePicker.getHour(), timePicker.getMinute(),
                                         datePicker.getMonth(), datePicker.getDayOfMonth(), datePicker.getYear());
 
@@ -197,7 +200,7 @@ public class TasksFragment extends Fragment {
                             //If the task DOES have a description
                             else if (taskDesc.getText().toString().length() > 0) {
 
-                                Task task = new Task(taskName.getText().toString(), taskDesc.getText().toString(), taskNotify.isChecked(),
+                                Task task = new Task(id, taskName.getText().toString(), taskDesc.getText().toString(), taskNotify.isChecked(),
                                         timePicker.getHour(), timePicker.getMinute(),
                                         datePicker.getMonth(), datePicker.getDayOfMonth(), datePicker.getYear());
 
@@ -344,6 +347,7 @@ public class TasksFragment extends Fragment {
             return tasks;
         }
         while (res.moveToNext()) {
+            int id = res.getInt(0);
             String name = res.getString(1);
             String desc = res.getString(2);
             int hour = res.getInt(3);
@@ -353,7 +357,7 @@ public class TasksFragment extends Fragment {
             int year = res.getInt(7);
             boolean notify = res.getInt(8) > 0;
             boolean complete = res.getInt(9) > 0;
-            Task oldtask = new Task(name, desc, notify, hour, minute, month, day, year);
+            Task oldtask = new Task(id, name, desc, notify, hour, minute, month, day, year);
             tasks.add(oldtask);
         }
         return tasks;
