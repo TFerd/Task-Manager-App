@@ -8,6 +8,7 @@ public class Task implements Serializable {      //The serializable basically me
 
     private String taskName, taskDescription;
     private int hour,minute;
+    private int id;
     private int month, day, year;
     //location variable
     private boolean notification;
@@ -17,7 +18,9 @@ public class Task implements Serializable {      //The serializable basically me
 
 
     //Constructor for Task without description
-    public Task(String taskName, boolean notification, int hour, int minute, int month, int day, int year){
+    public Task(int id, String taskName, boolean notification, int hour, int minute, int month, int day, int year){
+        this.id = id;
+
         this.taskName = taskName;
         this.notification = notification;
 
@@ -31,7 +34,9 @@ public class Task implements Serializable {      //The serializable basically me
     }
 
     //Constructor for Task WITH description
-    public Task(String taskName, String taskDescription, boolean notification, int hour, int minute, int month, int day, int year){
+    public Task(int id, String taskName, String taskDescription, boolean notification, int hour, int minute, int month, int day, int year){
+        this.id = id;
+
         this.taskName = taskName;
         this.taskDescription = taskDescription;
         this.notification = notification;
@@ -126,6 +131,10 @@ public class Task implements Serializable {      //The serializable basically me
 
     public void setHasBeenNotified(boolean hasBeenNotified) {
         this.hasBeenNotified = hasBeenNotified;
+    }
+
+    public int getId(){
+        return this.id;
     }
 
     public long getDate(){
