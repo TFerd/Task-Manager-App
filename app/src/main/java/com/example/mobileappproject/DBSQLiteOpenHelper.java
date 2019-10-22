@@ -94,10 +94,43 @@ public class DBSQLiteOpenHelper extends SQLiteOpenHelper {
         }
     }
 
+    // Returns full list of database
     public Cursor getAllData() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("select * from " + TABLE_NAME, null);
 
         return res;
     }
-}
+
+    public boolean updateData(int key, String name, String description, int hour, int minute, int month, int day, int year, boolean notify, boolean complete) {
+
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues cv = new ContentValues();
+            cv.put(id, key);
+            cv.put(col_1, name);
+            cv.put(col_2, description);
+            cv.put(col_3, hour);
+            cv.put(col_4, minute);
+            cv.put(col_5, month);
+            cv.put(col_6, day);
+            cv.put(col_7, year);
+            cv.put(col_8, notify);
+            cv.put(col_9, complete);
+
+            db.update(TABLE_NAME, cv, "id = ?", new String[]{id});
+
+            Log.i(TAG, "Successfully updated table");
+            return true;
+        } catch(Exception e){
+            Log.i(TAG, "Error in updating table");
+            return false;
+        }
+    }
+
+    public Integer deleteData(String key){
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(TABLE_NAME, "id = ?", new String[] { key });
+    }
+
+    }
