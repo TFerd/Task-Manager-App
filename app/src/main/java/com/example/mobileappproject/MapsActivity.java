@@ -163,7 +163,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    public void test(String location){
+    public void findByName(String location){
         mMap.clear();
         String url = getUrl(latitude, longitude, location);
         Object dataTransfers[] = new Object[2];
