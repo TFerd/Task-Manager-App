@@ -225,6 +225,12 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
                             list.get(position).setDay(datePicker.getDayOfMonth());
                             list.get(position).setYear(datePicker.getYear());
 
+                            Task task = list.get(position);
+
+                            System.out.println(task.getId());
+                            db.updateData(task.getId(), taskName.getText().toString(), taskDesc.getText().toString(), timePicker.getHour(), timePicker.getMinute(), datePicker.getMonth(), datePicker.getDayOfMonth(), datePicker.getYear(), taskNotify.isChecked(), task.isComplete() );
+
+
 
                             notifyDataSetChanged();
 
