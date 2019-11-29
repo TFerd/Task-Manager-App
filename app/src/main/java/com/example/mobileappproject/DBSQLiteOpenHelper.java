@@ -37,8 +37,6 @@ public class DBSQLiteOpenHelper extends SQLiteOpenHelper {
 
         Log.i(TAG, new Date().toString() + " Database was created");
 
-        Toast.makeText(context, "Database was created!", Toast.LENGTH_LONG);
-
         SQLiteDatabase db = this.getWritableDatabase();
 
     }
@@ -117,9 +115,14 @@ public class DBSQLiteOpenHelper extends SQLiteOpenHelper {
             cv.put(col_8, notify);
             cv.put(col_9, complete);
 
-            db.update(TABLE_NAME, cv, "id = ?", new String[]{id});
+            int results = db.update(TABLE_NAME, cv, "id = ?", new String[]{key+""});
 
-            Log.i(TAG, "Successfully updated table");
+            if (results == 0) {
+                Log.i(TAG, "UnSuccessfully updated table");
+            }
+            else {
+                Log.i(TAG, "Successfully updated table");
+            }
             return true;
         } catch(Exception e){
             Log.i(TAG, "Error in updating table");
@@ -132,6 +135,13 @@ public class DBSQLiteOpenHelper extends SQLiteOpenHelper {
         db.delete(TABLE_NAME, "id = ?", new String[] { key });
 
         Log.i(TAG, "deleteData: ");
+    }
+
+    public Cursor where(String whereClause, String equals){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(TABLE_NAME, new String[] {whereClause}, null,null,null,null,null );
+
+        return cursor;
     }
 
     }
