@@ -107,7 +107,6 @@ public class DBSQLiteOpenHelper extends SQLiteOpenHelper {
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues cv = new ContentValues();
-            cv.put(id, key);
             cv.put(col_1, name);
             cv.put(col_2, description);
             cv.put(col_3, hour);
@@ -128,9 +127,11 @@ public class DBSQLiteOpenHelper extends SQLiteOpenHelper {
         }
     }
 
-    public Integer deleteData(String key){
+    public void deleteData(String key){
         SQLiteDatabase db = getWritableDatabase();
         db.delete(TABLE_NAME, "id = ?", new String[] { key });
+
+        Log.i(TAG, "deleteData: ");
     }
 
     }

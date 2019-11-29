@@ -137,6 +137,8 @@ public class Task implements Serializable {      //The serializable basically me
         return this.id;
     }
 
+    public boolean isComplete() {return isComplete;}
+
     public long getDate(){
         long date = 0;
 
