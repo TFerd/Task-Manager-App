@@ -2,8 +2,13 @@ package com.example.mobileappproject;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -70,6 +75,11 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "started.");
         //Log.i(TAG, "onCreate: Instance state: " + savedInstanceState.toString());
 
+
+
+
+
+
         //Toolbar
         myToolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
@@ -93,7 +103,9 @@ public class MainActivity extends AppCompatActivity {
         myTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+
                 myPager.setCurrentItem(tab.getPosition());
+
                 Log.i(TAG, "Tab changed to - " + myPager.getCurrentItem());
             }
 
