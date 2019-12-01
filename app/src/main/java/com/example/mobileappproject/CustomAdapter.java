@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
 
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, final View convertView, ViewGroup parent) {
         View view = convertView;
 
         Log.i(TAG, "getView: getItem(): " + getItem(position));
@@ -228,14 +229,13 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
                             Task task = list.get(position);
 
                             System.out.println(task.getId());
-                            db.updateData(task.getId(), taskName.getText().toString(), taskDesc.getText().toString(), timePicker.getHour(), timePicker.getMinute(), datePicker.getMonth(), datePicker.getDayOfMonth(), datePicker.getYear(), taskNotify.isChecked(), task.isComplete() );
-
-
+                            if (db.updateData(task.getId(), taskName.getText().toString(), taskDesc.getText().toString(), timePicker.getHour(), timePicker.getMinute(), datePicker.getMonth(), datePicker.getDayOfMonth(), datePicker.getYear(), taskNotify.isChecked(), task.isComplete())){
+                                Log.i(TAG, "onClick: Task edited.");
+                            }
+                            else
+                                Log.i(TAG, "onClick: Failed Task edited.");
 
                             notifyDataSetChanged();
-
-
-                            Log.i(TAG, "onClick: Task edited.");
 
                             dialog.dismiss();
                         }
