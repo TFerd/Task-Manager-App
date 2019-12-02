@@ -136,7 +136,7 @@ public class TasksFragment extends Fragment {
                         boolean notify = taskNotify.isChecked();
 
                         // Add task to database
-                        db.insertData(name, desc, hour, minute, month, day, year, notify, false);
+                        db.insertData(name, desc, hour, minute, month, day, year, notify, false, "");
 
                             /*
                                 OUTPUTS STORED DATA, NOT NECESSARY TO RUN PROGRAM, DELETE AFTER DEBUGGING
@@ -159,6 +159,7 @@ public class TasksFragment extends Fragment {
                             buffer.append("year: " + res.getString(7) + "\n");
                             buffer.append("notify: " + res.getString(8) + "\n");
                             buffer.append("complete: " + res.getString(9) + "\n");
+                            buffer.append("location_id: " + res.getString(10) + "\n");
                             buffer.append("\n");
                             id = res.getInt(0);
                         }

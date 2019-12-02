@@ -16,19 +16,20 @@ import java.util.Date;
  */
 public class DBSQLiteOpenHelper extends SQLiteOpenHelper {
     private final static String TAG = "DBSQLiteOpenHelper : ";
-    public final static String DATABASE_NAME = "tasks.db";
-    public final static String TABLE_NAME = "task_table";
+    private final static String DATABASE_NAME = "tasks.db";
+    private final static String TABLE_NAME = "task_table";
     public final static String id = "id";
     private int key = 0;
-    public final static String col_1 = "NAME";
-    public final static String col_2 = "DESCRIPTION";
-    public final static String col_3 = "HOUR";
-    public final static String col_4 = "MINUTE";
-    public final static String col_5 = "MONTH";
-    public final static String col_6 = "DAY";
-    public final static String col_7 = "YEAR";
-    public final static String col_8 = "NOTIFY";
-    public final static String col_9 = "COMPLETE";
+    private final static String col_1 = "NAME";
+    private final static String col_2 = "DESCRIPTION";
+    private final static String col_3 = "HOUR";
+    private final static String col_4 = "MINUTE";
+    private final static String col_5 = "MONTH";
+    private final static String col_6 = "DAY";
+    private final static String col_7 = "YEAR";
+    private final static String col_8 = "NOTIFY";
+    private final static String col_9 = "COMPLETE";
+    private final static String col_10 = "LOCATION";
 
 
     public DBSQLiteOpenHelper(@Nullable Context context) {
@@ -46,7 +47,7 @@ public class DBSQLiteOpenHelper extends SQLiteOpenHelper {
         Log.i(TAG, " Reached On Create");
 
         db.execSQL("CREATE TABLE " + TABLE_NAME + "(" + id + " INTEGER PRIMARY KEY AUTOINCREMENT," + col_1 + " TEXT," + col_2 + " TEXT," + col_3 + " INTEGER,"
-                + col_4 + " INTEGER," + col_5 + " INTEGER," + col_6 + " INTEGER," + col_7 + " INTEGER," + col_8 + " BOOL," + col_9 + " BOOL" + ")");
+                + col_4 + " INTEGER," + col_5 + " INTEGER," + col_6 + " INTEGER," + col_7 + " INTEGER," + col_8 + " BOOL," + col_9 + " BOOL," + col_10 + " TEXT" +")");
     }
 
     @Override
@@ -58,7 +59,7 @@ public class DBSQLiteOpenHelper extends SQLiteOpenHelper {
     }
 
 
-    public boolean insertData(String name, String description, int hour, int minute, int month, int day, int year, boolean notify, boolean complete) {
+    public boolean insertData(String name, String description, int hour, int minute, int month, int day, int year, boolean notify, boolean complete, String location) {
 
         Log.i(TAG, "Insert Data Reached");
 
@@ -74,6 +75,7 @@ public class DBSQLiteOpenHelper extends SQLiteOpenHelper {
         cv.put(col_7, year);
         cv.put(col_8, notify);
         cv.put(col_9, complete);
+        cv.put(col_10, location);
 
         long result = db.insert(TABLE_NAME, null, cv);
 
@@ -100,7 +102,7 @@ public class DBSQLiteOpenHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public boolean updateData(int key, String name, String description, int hour, int minute, int month, int day, int year, boolean notify, boolean complete) {
+    public boolean updateData(int key, String name, String description, int hour, int minute, int month, int day, int year, boolean notify, boolean complete, String location) {
 
         try {
             SQLiteDatabase db = this.getWritableDatabase();
@@ -114,6 +116,7 @@ public class DBSQLiteOpenHelper extends SQLiteOpenHelper {
             cv.put(col_7, year);
             cv.put(col_8, notify);
             cv.put(col_9, complete);
+            cv.put(col_10, location);
 
             int results = db.update(TABLE_NAME, cv, "id = ?", new String[]{key+""});
 

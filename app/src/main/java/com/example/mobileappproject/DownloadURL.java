@@ -11,6 +11,7 @@ import java.net.URL;
 public class DownloadURL {
 
     public String readURL(String myURL) throws IOException{
+        /*
         String data = "";
         InputStream inputStream = null;
         HttpURLConnection urlConnection = null;
@@ -37,10 +38,47 @@ public class DownloadURL {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            inputStream.close();
+            if (inputStream != null) {
+                inputStream.close();
+            }
             urlConnection.disconnect();
         }
 
+        return data;*/
+
+        String data = "";
+        InputStream inputStream = null;
+        HttpURLConnection httpURLConnection = null;
+
+        try{
+            URL url = new URL(myURL);
+            httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.connect();
+
+            inputStream = httpURLConnection.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuffer stringBuffer = new StringBuffer();
+
+            String line = "";
+
+            while ( (line = bufferedReader.readLine()) != null){
+                stringBuffer.append(line);
+            }
+
+            data = stringBuffer.toString();
+            bufferedReader.close();
+
+
+        }catch (MalformedURLException e){
+            e.printStackTrace();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        finally {
+            inputStream.close();
+            httpURLConnection.disconnect();
+        }
         return data;
+
     }
 }

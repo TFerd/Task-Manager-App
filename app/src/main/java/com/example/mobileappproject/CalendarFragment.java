@@ -1,20 +1,36 @@
 package com.example.mobileappproject;
 
 
+import android.database.Cursor;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CalendarView;
+import android.widget.DatePicker;
+import android.widget.ListView;
+import android.widget.ScrollView;
+
+import java.util.ArrayList;
 
 
 public class CalendarFragment extends Fragment {
 
     private static final String TAG = "CalendarFragment";
+    CalendarView Kalendar;
+    public int Yr,Mth,DoM;
+    ListView Scroll;
 
+    //@TODO:
+    //  Create an array of tasks somehow that the user will be able to add/edit/remove.
+    //  Maybe make a Task class
+    //ArrayList<String> taskArray;
+    ArrayList<Task> taskArrayC;
 
     public CalendarFragment() {
         Log.d(TAG, "constructed.");
@@ -23,9 +39,68 @@ public class CalendarFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         Log.d(TAG, "created.");
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_calendar, container, false);
+        View view = inflater.inflate(R.layout.fragment_calendar, container, false);
+        Kalendar = view.findViewById(R.id.KCalendar);
+
+        final DBSQLiteOpenHelper db = new DBSQLiteOpenHelper(view.getContext());
+
+        taskArrayC = new ArrayList<>();
+
+
+        //Now you can use findViewById()
+        //Make sure you start it like v.findViewById()
+        Scroll = (ListView) view.findViewById(R.id.scroll);
+        //final CustomAdapter adapter = new CustomAdapter(taskArrayC, getContext());
+
+        Kalendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+            @Override
+            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
+                Yr = year; Mth = month; DoM = dayOfMonth;
+                Log.d(TAG, "Date selected: " + Yr + " " + Mth + " " +DoM);
+
+                taskArrayC = fillTasks(db);
+                final CustomAdapter adapter = new CustomAdapter(taskArrayC, getContext());
+                Scroll.setAdapter(adapter);
+            }
+        });
+
+
+        return view;
     }
 
+    public ArrayList<Task> fillTasks(DBSQLiteOpenHelper db) {
+        ArrayList<Task> tasks = new ArrayList<>();
+        Cursor res = db.getAllData();
+        if (res.getCount() == 0) {
+            return tasks;
+        }
+        while (res.moveToNext()) {
+            int id = res.getInt(0);
+            String name = res.getString(1);
+            String desc = res.getString(2);
+            int hour = res.getInt(3);
+            int minute = res.getInt(4);
+            int month = res.getInt(5);
+            int day = res.getInt(6);
+            int year = res.getInt(7);
+            boolean notify = res.getInt(8) > 0;
+            boolean complete = res.getInt(9) > 0;
+            if(year == Yr && month == Mth && day == DoM)
+            {
+                Task oldTask = new Task(id, name, desc, notify, hour, minute, month, day, year);
+                if (complete){
+                    oldTask.setComplete();
+                }
+                else {
+                    oldTask.setIncomplete();
+                }
+
+                tasks.add(oldTask);
+            }
+        }
+        return tasks;
+    }
 }

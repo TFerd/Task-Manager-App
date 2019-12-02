@@ -15,6 +15,7 @@ public class Task implements Serializable {      //The serializable basically me
     private boolean isComplete;
     private boolean hasBeenNotified = false;
 
+    private String locationId = "";
 
 
     //Constructor for Task without description
@@ -131,6 +132,14 @@ public class Task implements Serializable {      //The serializable basically me
 
     public void setHasBeenNotified(boolean hasBeenNotified) {
         this.hasBeenNotified = hasBeenNotified;
+    }
+
+    public void setLocationId(String locationId) {
+        this.locationId = locationId;
+    }
+
+    public String getLocationId() {
+        return locationId;
     }
 
     public int getId(){

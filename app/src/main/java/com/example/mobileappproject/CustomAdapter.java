@@ -229,7 +229,10 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
                             Task task = list.get(position);
 
                             System.out.println(task.getId());
-                            if (db.updateData(task.getId(), taskName.getText().toString(), taskDesc.getText().toString(), timePicker.getHour(), timePicker.getMinute(), datePicker.getMonth(), datePicker.getDayOfMonth(), datePicker.getYear(), taskNotify.isChecked(), task.isComplete())){
+                            if (db.updateData(task.getId(), taskName.getText().toString(),
+                                    taskDesc.getText().toString(), timePicker.getHour(), timePicker.getMinute(),
+                                    datePicker.getMonth(), datePicker.getDayOfMonth(), datePicker.getYear(), taskNotify.isChecked(),
+                                    task.isComplete(), task.getLocationId())){
                                 Log.i(TAG, "onClick: Task edited.");
                             }
                             else
