@@ -2,8 +2,11 @@ package com.example.mobileappproject;
 
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -16,21 +19,17 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -46,7 +45,6 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -142,11 +140,28 @@ public class HomeFragment extends Fragment implements LocationListener,
 
         autocompleteSupportFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
-            public void onPlaceSelected(@NonNull Place place) {
+            public void onPlaceSelected(@NonNull final Place place) {
                 Log.i(TAG, "onPlaceSelected: " + place.getName() + ", " + place.getId());
 
                 moveCamera(place.getLatLng(), DEFAULT_ZOOM, place.getName());
-                addTaskDialog(place);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Assign to a task?");
+                builder.setMessage("Would you like to add this location to a task?");
+                builder.setCancelable(true);
+
+                builder.setNegativeButton("No", null);
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        addTaskDialog(place);
+                    }
+                });
+
+                AlertDialog addLocDialog = builder.create();
+                addLocDialog.show();
+
+                //addTaskDialog(place);
 
             }
 
@@ -387,29 +402,95 @@ public class HomeFragment extends Fragment implements LocationListener,
 
         Log.i(TAG, "addTaskDialog: called.");
         
-        Dialog dialog = new Dialog(getContext());
+        final Dialog dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.custom_location_add_dialog);
         dialog.setTitle("Select task to assign location.");
 
-        CalendarFragment calendarFragment = new CalendarFragment();
+        String locationId = place.getId();
 
-        ArrayList<com.example.mobileappproject.Task> arrayList = new ArrayList<>();
+
+        ArrayList<String> taskList = new ArrayList<>();
 
         ListView listView = dialog.findViewById(R.id.location_task_listview);
 
+        final DBSQLiteOpenHelper db = new DBSQLiteOpenHelper(getContext());
 
+        taskList = fillTasksString(db);
 
-        DBSQLiteOpenHelper db = new DBSQLiteOpenHelper(getContext());
+        final ArrayAdapter arrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.list_item, R.id.task_name, taskList);
 
-        arrayList = calendarFragment.fillTasks(db);
-        CustomAdapter adapter = new CustomAdapter(arrayList, getContext());
-        listView.setAdapter(adapter);
+        listView.setAdapter(arrayAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Cursor cursor = db.getAllData();
+
+                //MyTask myTask = (MyTask)arrayAdapter.getItem(position);
+
+                //Log.i(TAG, "onItemClick: Task ID: " + myTask.getId());
+
+                Log.i(TAG, "onItemClick: Position number: " + position + " clicked.");
+
+                dialog.dismiss();
+
+            }
+        });
 
         dialog.setCancelable(true);
         dialog.show();
 
-
-
     }
+
+    private ArrayList<MyTask> fillTasks(DBSQLiteOpenHelper db) {
+        ArrayList<MyTask> myTasks = new ArrayList<>();
+        Cursor cursor = db.getAllData();
+        if (cursor.getCount() < 1) {
+            return myTasks;
+        }
+
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(0);
+            String name = cursor.getString(1);
+            String desc = cursor.getString(2);
+            int hour = cursor.getInt(3);
+            int minute = cursor.getInt(4);
+            int month = cursor.getInt(5);
+            int day = cursor.getInt(6);
+            int year = cursor.getInt(7);
+            boolean notify = cursor.getInt(8) > 0;
+            boolean complete = cursor.getInt(9) > 0;
+            String locId = cursor.getString(0);
+
+            MyTask myTask =
+                    new MyTask(id, name, desc, notify, hour, minute, month, day,
+                            year);
+            if (complete) {
+                myTask.setComplete();
+            } else
+                myTask.setIncomplete();
+
+            myTasks.add(myTask);
+
+        }
+        return myTasks;
+    }
+
+
+    private ArrayList<String> fillTasksString(DBSQLiteOpenHelper db){
+        ArrayList<String> tasks = new ArrayList<>();
+
+        Cursor cursor = db.getAllData();
+        if (cursor.getCount() < 1) {
+            return tasks;
+        }
+
+        while (cursor.moveToNext()) {
+            String name = cursor.getString(1);
+            tasks.add(name);
+        }
+        return tasks;
+    }
+
 
 }

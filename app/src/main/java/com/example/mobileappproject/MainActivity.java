@@ -17,7 +17,7 @@ import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 
 /*
-*   Using TabLayout to store the different Tab Fragments (Home, Task, CalendarFragment classes) and control them using PagerController class.
+*   Using TabLayout to store the different Tab Fragments (Home, MyTask, CalendarFragment classes) and control them using PagerController class.
 *   The individual fragments can be worked on in their respective Java Classes.
 *
 *   Using Youtube tutorial: https://www.youtube.com/watch?v=7HZmkaxB_PA

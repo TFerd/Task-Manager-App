@@ -1,14 +1,14 @@
 <resources>
     <string name="app_name">MobileAppProject</string>
     <string name="home">Home</string>
-    <string name="tasks">Tasks</string>
+    <string name="myTasks">Tasks</string>
     <string name="calendar">Calendar</string>
     <string name="greeting">Welcome Back!\nHere\'s the to-do\'s today!</string>
     <string name="add_button">Add</string>
     <string name="edit_button">Edit</string>
     <string name="delete_button">Delete</string>
     <string name="cancel_button">Cancel</string>
-    <string name="add_dialog_hint">Enter task name</string>
+    <string name="add_dialog_hint">Enter myTask name</string>
     <string name="add_dialog_desc">Enter description (Optional)</string>
     <string name="add_dialog_notif">Notify?</string>
 

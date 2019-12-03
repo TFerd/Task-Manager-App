@@ -3,7 +3,7 @@ package com.example.mobileappproject;
 import java.io.Serializable;
 import java.util.Calendar;
 
-public class Task implements Serializable {      //The serializable basically means it can be passed through an Intent, which is important when setting up notifications
+public class MyTask implements Serializable {      //The serializable basically means it can be passed through an Intent, which is important when setting up notifications
 
 
     private String taskName, taskDescription;
@@ -18,8 +18,8 @@ public class Task implements Serializable {      //The serializable basically me
     private String locationId = "";
 
 
-    //Constructor for Task without description
-    public Task(int id, String taskName, boolean notification, int hour, int minute, int month, int day, int year){
+    //Constructor for MyTask without description
+    public MyTask(int id, String taskName, boolean notification, int hour, int minute, int month, int day, int year){
         this.id = id;
 
         this.taskName = taskName;
@@ -34,8 +34,8 @@ public class Task implements Serializable {      //The serializable basically me
 
     }
 
-    //Constructor for Task WITH description
-    public Task(int id, String taskName, String taskDescription, boolean notification, int hour, int minute, int month, int day, int year){
+    //Constructor for MyTask WITH description
+    public MyTask(int id, String taskName, String taskDescription, boolean notification, int hour, int minute, int month, int day, int year){
         this.id = id;
 
         this.taskName = taskName;

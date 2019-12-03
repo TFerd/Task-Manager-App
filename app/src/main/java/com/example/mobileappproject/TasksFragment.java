@@ -11,11 +11,9 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.media.RingtoneManager;
 import android.os.Build;
 import android.os.Bundle;
 
-import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.SystemClock;
@@ -46,9 +44,9 @@ public class TasksFragment extends Fragment {
 
     //@TODO:
     //  Create an array of tasks somehow that the user will be able to add/edit/remove.
-    //  Maybe make a Task class
-    //ArrayList<String> taskArray;
-    ArrayList<Task> taskArray;
+    //  Maybe make a MyTask class
+    //ArrayList<String> myTaskArray;
+    ArrayList<MyTask> myTaskArray;
 
 
     public TasksFragment() {
@@ -76,15 +74,15 @@ public class TasksFragment extends Fragment {
 
         final DBSQLiteOpenHelper db = new DBSQLiteOpenHelper(view.getContext());
 
-        taskArray = new ArrayList<>();
+        myTaskArray = new ArrayList<>();
 
-        taskArray = fillTasks(db);
+        myTaskArray = fillTasks(db);
 
 
         //Now you can use findViewById()
         //Make sure you start it like v.findViewById()
         listView = (ListView) view.findViewById(R.id.taskList);
-        final CustomAdapter adapter = new CustomAdapter(taskArray, getContext());
+        final CustomAdapter adapter = new CustomAdapter(myTaskArray, getContext());
         listView.setAdapter(adapter);
 
 
@@ -168,31 +166,31 @@ public class TasksFragment extends Fragment {
                         builder.setCancelable(true);
                         builder.setTitle("Data");
                         builder.setMessage(buffer);
-                        builder.show();
+                        //builder.show();
 
                         if(name.length() > 0) {
 
                             //If the task does NOT have a description
                             if (taskDesc.getText().toString().length() < 1) {
 
-                                Task task = new Task(id, taskName.getText().toString(), taskNotify.isChecked(),
+                                MyTask myTask = new MyTask(id, taskName.getText().toString(), taskNotify.isChecked(),
                                         timePicker.getHour(), timePicker.getMinute(),
                                         datePicker.getMonth(), datePicker.getDayOfMonth(), datePicker.getYear());
 
-                                adapter.addItem(task);
+                                adapter.addItem(myTask);
 
 
-                                Log.i(TAG, "onClick: Task added WITHOUT description. Notifications = " + task.isNotification()
-                                        + "\nThe tasks hour is: " + task.getHour() + " | The minute is: " + task.getMinute());
+                                Log.i(TAG, "onClick: MyTask added WITHOUT description. Notifications = " + myTask.isNotification()
+                                        + "\nThe tasks hour is: " + myTask.getHour() + " | The minute is: " + myTask.getMinute());
 
-                                //scheduleNotification(task.getTaskName(), 3500);
-                                //scheduleNotification(task);
+                                //scheduleNotification(myTask.getTaskName(), 3500);
+                                //scheduleNotification(myTask);
 
                                 //Adds a notification ONLY if notifications are checked
-                                if (task.isNotification()) {
-                                    scheduleNotification(task);
+                                if (myTask.isNotification()) {
+                                    scheduleNotification(myTask);
 
-                                    Log.i(TAG, "onClick: Notification is " + task.isNotification() + ", notification scheduled...");
+                                    Log.i(TAG, "onClick: Notification is " + myTask.isNotification() + ", notification scheduled...");
                                 }
 
                                 dialog.dismiss();
@@ -201,25 +199,25 @@ public class TasksFragment extends Fragment {
                             //If the task DOES have a description
                             else if (taskDesc.getText().toString().length() > 0) {
 
-                                Task task = new Task(id, taskName.getText().toString(), taskDesc.getText().toString(), taskNotify.isChecked(),
+                                MyTask myTask = new MyTask(id, taskName.getText().toString(), taskDesc.getText().toString(), taskNotify.isChecked(),
                                         timePicker.getHour(), timePicker.getMinute(),
                                         datePicker.getMonth(), datePicker.getDayOfMonth(), datePicker.getYear());
 
 
-                                adapter.addItem(task);
+                                adapter.addItem(myTask);
 
 
-                                Log.i(TAG, "onClick: Task added WITH description. Notifications = " + task.isNotification()
-                                        + "\nThe tasks hour is: " + task.getHour() + " | The minute is: " + task.getMinute());
+                                Log.i(TAG, "onClick: MyTask added WITH description. Notifications = " + myTask.isNotification()
+                                        + "\nThe tasks hour is: " + myTask.getHour() + " | The minute is: " + myTask.getMinute());
 
-                                //scheduleNotification(task.getTaskName(), 3500);
-                                //scheduleNotification(task);
+                                //scheduleNotification(myTask.getTaskName(), 3500);
+                                //scheduleNotification(myTask);
 
                                 //Adds a notification ONLY if notifications are checked
-                                if (task.isNotification() == true) {
-                                    scheduleNotification(task);
+                                if (myTask.isNotification() == true) {
+                                    scheduleNotification(myTask);
 
-                                    Log.i(TAG, "onClick: Notification is " + task.isNotification() + ", notification scheduled...");
+                                    Log.i(TAG, "onClick: Notification is " + myTask.isNotification() + ", notification scheduled...");
                                 }
 
                                 dialog.dismiss();
@@ -259,9 +257,9 @@ public class TasksFragment extends Fragment {
     //@TODO
     //  Make it so if the user chooses NO notifications, and then edits to say YES notifications, it will
     //  call the notification.
-    //  Also, add more notifications for a task. (Remind 1 hour before or 30 minutes before etc.)
+    //  Also, add more notifications for a myTask. (Remind 1 hour before or 30 minutes before etc.)
     //  Also, add the ability to take the user back to the app when the notification is clicked.
-    private void scheduleNotification(Task task){
+    private void scheduleNotification(MyTask myTask){
 
         Log.i(TAG, "scheduleNotification: Called");
 
@@ -289,9 +287,9 @@ public class TasksFragment extends Fragment {
         }
 
         //builder.setContentTitle("Title");
-        //builder.setContentText(task.getTaskName() + " notification");
+        //builder.setContentText(myTask.getTaskName() + " notification");
         builder.setContentTitle("Reminder!");
-        builder.setContentText(task.getTaskName() + " is scheduled for now!");
+        builder.setContentText(myTask.getTaskName() + " is scheduled for now!");
 
         builder.setSmallIcon(R.drawable.ic_alarm_black_24dp);
 
@@ -300,16 +298,16 @@ public class TasksFragment extends Fragment {
         Intent notificationIntent = new Intent(getContext(), NotificationPublisher.class);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
-        //notificationIntent.putExtra("TASK", task);
-        //The Bundle is for passing the task to the NotificationPublisher so that it can edit the task once the notification happens.
+        //notificationIntent.putExtra("TASK", myTask);
+        //The Bundle is for passing the myTask to the NotificationPublisher so that it can edit the myTask once the notification happens.
         Bundle taskBundle = new Bundle();
-        taskBundle.putSerializable("taskKey", (Serializable) task);
+        taskBundle.putSerializable("taskKey", (Serializable) myTask);
         notificationIntent.putExtra("DATA", taskBundle);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
-        long timeTilNotif = SystemClock.elapsedRealtime() + calcTime(task);
+        long timeTilNotif = SystemClock.elapsedRealtime() + calcTime(myTask);
 
         Log.i(TAG, "scheduleNotification: Time before notif: " + timeTilNotif);
         Date d = new Date(timeTilNotif);
@@ -318,7 +316,7 @@ public class TasksFragment extends Fragment {
         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, timeTilNotif, pendingIntent);
 
-        Log.i(TAG, "scheduleNotification: Task hasBeenNotified pre-notification (Should return false): " + task.hasBeenNotified());
+        Log.i(TAG, "scheduleNotification: MyTask hasBeenNotified pre-notification (Should return false): " + myTask.hasBeenNotified());
 
         Log.i(TAG, "scheduleNotification: Completed");
 
@@ -327,25 +325,25 @@ public class TasksFragment extends Fragment {
 
 
     //This method calculates the time before the notification arrives.
-    //Currently it just subtracts the date of the task to the current time to figure out the time buffer before the notification.
+    //Currently it just subtracts the date of the myTask to the current time to figure out the time buffer before the notification.
     //I think this function can be improved, as of right now, it doesn't notify the user right when the clock hits a certain minute.
-    //If the task is scheduled for the next minute, then it will wait all 60 seconds before notifying, rather than notifying right when the clock hits the next minute.
-    private long calcTime(Task task){
+    //If the myTask is scheduled for the next minute, then it will wait all 60 seconds before notifying, rather than notifying right when the clock hits the next minute.
+    private long calcTime(MyTask myTask){
 
         long time = 0;
 
-        time = task.getDate() - Calendar.getInstance().getTimeInMillis();
+        time = myTask.getDate() - Calendar.getInstance().getTimeInMillis();
 
         Log.i(TAG, "calcTime: The elapsed time is: " + time);
 
         return time;
     }
 
-    private ArrayList<Task> fillTasks(DBSQLiteOpenHelper db) {
-        ArrayList<Task> tasks = new ArrayList<>();
+    private ArrayList<MyTask> fillTasks(DBSQLiteOpenHelper db) {
+        ArrayList<MyTask> myTasks = new ArrayList<>();
         Cursor res = db.getAllData();
         if (res.getCount() == 0) {
-            return tasks;
+            return myTasks;
         }
         while (res.moveToNext()) {
             int id = res.getInt(0);
@@ -358,10 +356,10 @@ public class TasksFragment extends Fragment {
             int year = res.getInt(7);
             boolean notify = res.getInt(8) > 0;
             boolean complete = res.getInt(9) > 0;
-            Task oldtask = new Task(id, name, desc, notify, hour, minute, month, day, year);
-            tasks.add(oldtask);
+            MyTask oldtask = new MyTask(id, name, desc, notify, hour, minute, month, day, year);
+            myTasks.add(oldtask);
         }
-        return tasks;
+        return myTasks;
     }
 
 

@@ -12,9 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CalendarView;
-import android.widget.DatePicker;
 import android.widget.ListView;
-import android.widget.ScrollView;
 
 import java.util.ArrayList;
 
@@ -28,9 +26,9 @@ public class CalendarFragment extends Fragment {
 
     //@TODO:
     //  Create an array of tasks somehow that the user will be able to add/edit/remove.
-    //  Maybe make a Task class
-    //ArrayList<String> taskArray;
-    ArrayList<Task> taskArrayC;
+    //  Maybe make a MyTask class
+    //ArrayList<String> myTaskArray;
+    ArrayList<MyTask> myTaskArrayC;
 
     public CalendarFragment() {
         Log.d(TAG, "constructed.");
@@ -47,13 +45,13 @@ public class CalendarFragment extends Fragment {
 
         final DBSQLiteOpenHelper db = new DBSQLiteOpenHelper(view.getContext());
 
-        taskArrayC = new ArrayList<>();
+        myTaskArrayC = new ArrayList<>();
 
 
         //Now you can use findViewById()
         //Make sure you start it like v.findViewById()
         Scroll = (ListView) view.findViewById(R.id.scroll);
-        //final CustomAdapter adapter = new CustomAdapter(taskArrayC, getContext());
+        //final CustomAdapter adapter = new CustomAdapter(myTaskArrayC, getContext());
 
         Kalendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
@@ -61,8 +59,8 @@ public class CalendarFragment extends Fragment {
                 Yr = year; Mth = month; DoM = dayOfMonth;
                 Log.d(TAG, "Date selected: " + Yr + " " + Mth + " " +DoM);
 
-                taskArrayC = fillTasks(db);
-                final CustomAdapter adapter = new CustomAdapter(taskArrayC, getContext());
+                myTaskArrayC = fillTasks(db);
+                final CustomAdapter adapter = new CustomAdapter(myTaskArrayC, getContext());
                 Scroll.setAdapter(adapter);
             }
         });
@@ -71,11 +69,11 @@ public class CalendarFragment extends Fragment {
         return view;
     }
 
-    public ArrayList<Task> fillTasks(DBSQLiteOpenHelper db) {
-        ArrayList<Task> tasks = new ArrayList<>();
+    private ArrayList<MyTask> fillTasks(DBSQLiteOpenHelper db) {
+        ArrayList<MyTask> myTasks = new ArrayList<>();
         Cursor res = db.getAllData();
         if (res.getCount() == 0) {
-            return tasks;
+            return myTasks;
         }
         while (res.moveToNext()) {
             int id = res.getInt(0);
@@ -90,17 +88,17 @@ public class CalendarFragment extends Fragment {
             boolean complete = res.getInt(9) > 0;
             if(year == Yr && month == Mth && day == DoM)
             {
-                Task oldTask = new Task(id, name, desc, notify, hour, minute, month, day, year);
+                MyTask oldMyTask = new MyTask(id, name, desc, notify, hour, minute, month, day, year);
                 if (complete){
-                    oldTask.setComplete();
+                    oldMyTask.setComplete();
                 }
                 else {
-                    oldTask.setIncomplete();
+                    oldMyTask.setIncomplete();
                 }
 
-                tasks.add(oldTask);
+                myTasks.add(oldMyTask);
             }
         }
-        return tasks;
+        return myTasks;
     }
 }

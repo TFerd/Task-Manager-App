@@ -9,8 +9,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import java.io.Serializable;
-
 
 public class NotificationPublisher extends BroadcastReceiver {
 
@@ -26,17 +24,17 @@ public class NotificationPublisher extends BroadcastReceiver {
         Log.i(TAG, "onReceive: Called");
 
 
-        //Receives the Task from the intent as a bundle
-        //Task task = (Task) intent.getSerializableExtra("TASK");
+        //Receives the MyTask from the intent as a bundle
+        //MyTask myTask = (MyTask) intent.getSerializableExtra("TASK");
         Bundle receiveBundle = intent.getBundleExtra("DATA");
-        Task task = (Task)receiveBundle.getSerializable("taskKey");
+        MyTask myTask = (MyTask)receiveBundle.getSerializable("taskKey");
 
-        Log.i(TAG, "onReceive: Tasks notifications are set to: " + task.isNotification());
+        Log.i(TAG, "onReceive: Tasks notifications are set to: " + myTask.isNotification());
 
-        Log.i(TAG, "onReceive: Task hasBeenNotified pre-notification (Should return false): " + task.hasBeenNotified());
+        Log.i(TAG, "onReceive: MyTask hasBeenNotified pre-notification (Should return false): " + myTask.hasBeenNotified());
 
-        //Checks if the notification is still true for the task
-        if (task.isNotification()) {
+        //Checks if the notification is still true for the myTask
+        if (myTask.isNotification()) {
 
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -52,12 +50,12 @@ public class NotificationPublisher extends BroadcastReceiver {
             notificationManager.notify(notificationId, notification);
 
 
-            Log.i(TAG, "onReceive: Task received is taskName: " + task.getTaskName());
+            Log.i(TAG, "onReceive: MyTask received is taskName: " + myTask.getTaskName());
 
-            //Sets the Task as notified
-            task.setHasBeenNotified(true);
+            //Sets the MyTask as notified
+            myTask.setHasBeenNotified(true);
 
-            Log.i(TAG, "onReceive: Task hasBeenNotified post-notification (Should return true): " + task.hasBeenNotified());
+            Log.i(TAG, "onReceive: MyTask hasBeenNotified post-notification (Should return true): " + myTask.hasBeenNotified());
 
             Log.i(TAG, "onReceive: Finished");
         }

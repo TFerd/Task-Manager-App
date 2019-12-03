@@ -17,7 +17,6 @@ import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,11 +32,13 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
 
     private static final String TAG = "CustomAdapter";
 
-    private ArrayList<Task> list;
+    private ArrayList<MyTask> list;
     private Context context;
 
+    private TextView listItemText;
 
-    public CustomAdapter(ArrayList<Task> list, Context context) {
+
+    public CustomAdapter(ArrayList<MyTask> list, Context context) {
         this.list = list;
         this.context = context;
     }
@@ -81,7 +82,7 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
         //**********THIS IS WHERE YOU CAN EDIT THE ListView XML ITEMS***************
         //**************************************************************************
         //Displays the String from the List
-        TextView listItemText = (TextView) view.findViewById(R.id.list_item_text);
+        listItemText = (TextView) view.findViewById(R.id.list_item_text);
         listItemText.setText(list.get(position).getTaskName());
 
         //Sets if the checkbox is checked based on notification status
@@ -145,7 +146,7 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
             @Override
             public void onClick(View v) {
 
-                Log.d(TAG, "onClick: Delete button clicked. Task: " + getItem(position));
+                Log.d(TAG, "onClick: Delete button clicked. MyTask: " + getItem(position));
 
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
@@ -166,7 +167,7 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
                         list.remove(positionToDelete);
                         notifyDataSetChanged();
 
-                        Log.i(TAG, "onClick: Task " + position + " deleted.");
+                        Log.i(TAG, "onClick: MyTask " + position + " deleted.");
                     }
                 });
 
@@ -226,17 +227,17 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
                             list.get(position).setDay(datePicker.getDayOfMonth());
                             list.get(position).setYear(datePicker.getYear());
 
-                            Task task = list.get(position);
+                            MyTask myTask = list.get(position);
 
-                            System.out.println(task.getId());
-                            if (db.updateData(task.getId(), taskName.getText().toString(),
+                            System.out.println(myTask.getId());
+                            if (db.updateData(myTask.getId(), taskName.getText().toString(),
                                     taskDesc.getText().toString(), timePicker.getHour(), timePicker.getMinute(),
                                     datePicker.getMonth(), datePicker.getDayOfMonth(), datePicker.getYear(), taskNotify.isChecked(),
-                                    task.isComplete(), task.getLocationId())){
-                                Log.i(TAG, "onClick: Task edited.");
+                                    myTask.isComplete(), myTask.getLocationId())){
+                                Log.i(TAG, "onClick: MyTask edited.");
                             }
                             else
-                                Log.i(TAG, "onClick: Failed Task edited.");
+                                Log.i(TAG, "onClick: Failed MyTask edited.");
 
                             notifyDataSetChanged();
 
@@ -270,12 +271,16 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
     }
 
 
-    public void addItem(Task task) {
+    public void addItem(MyTask myTask) {
 
-        list.add(task);
+        list.add(myTask);
         notifyDataSetChanged();
 
-        Log.i(TAG, "addItem: Task added");
+        Log.i(TAG, "addItem: MyTask added");
 
     }
+
+
+
+
 }
