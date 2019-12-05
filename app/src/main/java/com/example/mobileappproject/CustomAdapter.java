@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.location.Geocoder;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,10 +21,6 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.libraries.places.api.model.Place;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -44,9 +39,6 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
     private Context context;
 
     private TextView listItemText;
-
-    private String apiKey = "AIzaSyBuLxjCEfnGwKTPOgiClUB_J4WCec_zApI";
-
 
     public CustomAdapter(ArrayList<MyTask> list, Context context) {
         this.list = list;
@@ -182,7 +174,6 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
                     }
                 });
 
-
                 AlertDialog confirmDeleteDialog = builder.create();
                 confirmDeleteDialog.show();
 
@@ -190,8 +181,6 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
         });
 
 
-        //@TODO
-        //  Add a way to change when the notification will appear if the task is edited.
         //Edit button onClick
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -278,7 +267,7 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
             }
         });
 
-
+        //Directions button handler (Opens up Google Directions app)
         directionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -302,22 +291,19 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
                     Log.i(TAG, "onClick: clicked.");
                 }
                 else{
+                    Toast.makeText(context, "No location assigned.", Toast.LENGTH_SHORT).show();
                     Log.i(TAG, "onClick: Place id is empty.");
                 }
             }
         });
-
         return view;
     }
 
-
     public void addItem(MyTask myTask) {
-
         list.add(myTask);
         notifyDataSetChanged();
 
         Log.i(TAG, "addItem: MyTask added");
-
     }
 
     private void getDirections(final double lat, final double lng) {
@@ -329,7 +315,6 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, final int id) {
 
-
                         String latitude = String.valueOf(lat);
                         String longitude = String.valueOf(lng);
                         Uri intentUri = Uri.parse("google.navigation:q=" + latitude + "," + longitude);
@@ -337,9 +322,7 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
                         mapIntent.setPackage("com.google.android.apps.maps");
 
                         try {
-
                                 context.startActivity(mapIntent);
-
                         } catch (NullPointerException e) {
 
                             Log.e(TAG, "onClick: NullPointerException: Couldn't open map." + e.getMessage());
@@ -357,8 +340,4 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
         final AlertDialog alert = builder.create();
         alert.show();
     }
-
-
-
-
 }

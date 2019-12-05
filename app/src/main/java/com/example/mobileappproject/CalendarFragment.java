@@ -24,10 +24,6 @@ public class CalendarFragment extends Fragment {
     public int Yr,Mth,DoM;
     ListView Scroll;
 
-    //@TODO:
-    //  Create an array of tasks somehow that the user will be able to add/edit/remove.
-    //  Maybe make a MyTask class
-    //ArrayList<String> myTaskArray;
     ArrayList<MyTask> myTaskArrayC;
 
     public CalendarFragment() {
@@ -51,7 +47,6 @@ public class CalendarFragment extends Fragment {
         //Now you can use findViewById()
         //Make sure you start it like v.findViewById()
         Scroll = (ListView) view.findViewById(R.id.scroll);
-        //final CustomAdapter adapter = new CustomAdapter(myTaskArrayC, getContext());
 
         Kalendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
@@ -64,7 +59,6 @@ public class CalendarFragment extends Fragment {
                 Scroll.setAdapter(adapter);
             }
         });
-
 
         return view;
     }
@@ -95,7 +89,6 @@ public class CalendarFragment extends Fragment {
                 else {
                     oldMyTask.setIncomplete();
                 }
-
                 myTasks.add(oldMyTask);
             }
         }

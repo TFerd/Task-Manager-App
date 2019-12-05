@@ -5,13 +5,9 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -28,7 +24,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -58,16 +53,13 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /*
  *   Home Fragment is now home to the Google Map feature.
  *
  */
-
 
 public class HomeFragment extends Fragment implements LocationListener,
         GoogleApiClient.ConnectionCallbacks,
@@ -76,7 +68,6 @@ public class HomeFragment extends Fragment implements LocationListener,
     private static final String TAG = "HomeFragment";
 
     private static final int REQUEST_LOCATION_CODE = 100;
-    private int PROXIMITY_RADIUS = 10000;
 
     private static final float DEFAULT_ZOOM = 15f;
 
@@ -92,17 +83,11 @@ public class HomeFragment extends Fragment implements LocationListener,
 
     private FusedLocationProviderClient fusedLocationProviderClient;
 
-    private double latitude, longitude;
 
-    //private ImageButton searchButton;
+
     private EditText searchText;
 
     private ImageView centerGPS;
-
-    private Button addLocationButton;
-
-    //private String apiKey = getString(R.string.api_key);
-
 
     public HomeFragment() {
         Log.d(TAG, "constructed.");
@@ -112,12 +97,9 @@ public class HomeFragment extends Fragment implements LocationListener,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         Log.d(TAG, "created.");
 
-
         final View view = inflater.inflate(R.layout.fragment_home, container, false);
-
 
         if (!Places.isInitialized()) {
             Log.i(TAG, "onCreateView: Places initialized.");
@@ -159,8 +141,6 @@ public class HomeFragment extends Fragment implements LocationListener,
                 AlertDialog addLocDialog = builder.create();
                 addLocDialog.show();
 
-                //addTaskDialog(place);
-
             }
 
             @Override
@@ -169,10 +149,7 @@ public class HomeFragment extends Fragment implements LocationListener,
             }
         });
 
-
-        //searchText = (EditText) view.findViewById(R.id.location_search_box);
         centerGPS = (ImageView) view.findViewById(R.id.ic_gps);
-
 
         centerGPS.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,7 +157,6 @@ public class HomeFragment extends Fragment implements LocationListener,
                 Log.i(TAG, "onClick: clicked on gps icon");
 
                 getMyLocation();
-                //placesClient.findCurrentPlace();
             }
         });
 
@@ -256,34 +232,6 @@ public class HomeFragment extends Fragment implements LocationListener,
         } catch (SecurityException e) {
             Log.e(TAG, "getMyLocation: ", e.getCause());
         }
-
-
-    }
-
-    private void findLocation() {
-
-        Log.i(TAG, "findLocation: Called");
-
-        String searchString = searchText.getText().toString();
-
-        Geocoder geocoder = new Geocoder(getContext());
-        List<Address> list = new ArrayList<>();
-
-        try {
-            list = geocoder.getFromLocationName(searchString, 1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if (list.size() > 0) {
-            Address address = list.get(0);
-
-            moveCamera(new LatLng(address.getLatitude(), address.getLongitude()), DEFAULT_ZOOM, address.getAddressLine(0));
-
-            Log.i(TAG, "findLocation: Found location: " + address.toString());
-        } else {
-            Log.i(TAG, "findLocation: No location found :(");
-        }
     }
 
     private void moveCamera(LatLng latLng, float zoom, String title) {
@@ -292,11 +240,9 @@ public class HomeFragment extends Fragment implements LocationListener,
         googleMap.clear();
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
 
-        //if(!title.equals("My Location")) {
-
         MarkerOptions markerOptions = new MarkerOptions().position(latLng).title(title);
         googleMap.addMarker(markerOptions);
-        //}
+
 
         hideKeyboard();
     }
@@ -318,52 +264,13 @@ public class HomeFragment extends Fragment implements LocationListener,
 
     @Override
     public void onConnectionSuspended(int i) {
-
         Log.i(TAG, "onConnectionSuspended: ");
-
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.i(TAG, "onConnectionFailed: ");
-
     }
-
-    protected synchronized void buildGoogleApiClient() {
-        client = new GoogleApiClient.Builder(getContext())
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-        client.connect();
-
-    }
-
-    /*
-    private String getUrl(double latitude, double longitude, String location) {
-        StringBuilder googlePlaceUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/findplacefromtext/json?");
-        googlePlaceUrl.append("location" + latitude + "," + longitude);
-        googlePlaceUrl.append("&radius=" + PROXIMITY_RADIUS);
-        googlePlaceUrl.append("&type=" + location);
-        //googlePlaceUrl.append("&keyword=" + location);
-        googlePlaceUrl.append("&sensor=true");
-        //googlePlaceUrl.append("&key= AIzaSyCgoXDzopQsZJ-GmH_iFCz3ByRkYjqzUeA");
-        googlePlaceUrl.append("&key=AIzaSyBuLxjCEfnGwKTPOgiClUB_J4WCec_zApI");
-
-        return googlePlaceUrl.toString();
-
-    }
-
-    private String directionsURL(String originID, String destinationID) {
-        StringBuilder googleDirectionsUrl = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
-        googleDirectionsUrl.append("origin=place_id:" + originID);
-        googleDirectionsUrl.append("&destination=place_id:" + destinationID);
-        googleDirectionsUrl.append("&key=" + "AIzaSyBuLxjCEfnGwKTPOgiClUB_J4WCec_zApI");
-
-        return googleDirectionsUrl.toString();
-    }
-
-     */
 
     @Override
     public void onLocationChanged(Location location) {
@@ -389,7 +296,6 @@ public class HomeFragment extends Fragment implements LocationListener,
         }
     }
 
-
     private void hideKeyboard() {
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
@@ -402,9 +308,6 @@ public class HomeFragment extends Fragment implements LocationListener,
         dialog.setContentView(R.layout.custom_location_add_dialog);
         dialog.setTitle("Select task to assign location.");
 
-        String locationId = place.getId();
-
-
         ArrayList<String> taskList = new ArrayList<>();
 
         ListView listView = dialog.findViewById(R.id.location_task_listview);
@@ -413,44 +316,26 @@ public class HomeFragment extends Fragment implements LocationListener,
 
         taskList = fillTasksString(db);
 
-        final ArrayAdapter arrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.list_item, R.id.task_name, taskList);
+        final ArrayAdapter arrayAdapter = new ArrayAdapter<>(getContext(), R.layout.list_item, R.id.task_name, taskList);
 
         listView.setAdapter(arrayAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Cursor cursor = db.getAllData();
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) { ;
                 Cursor cs = db.selectFrom(parent.getItemAtPosition(position).toString());
                 int taskId = -1;
-                String name = "";
 
                 Log.i(TAG, "onItemClick: LOCATION ID: " + place.getId());
-                //Construct the Task based on the stuff from the Database
-                if(cs.moveToFirst()){
-                    taskId = cs.getInt(0);
-                    name = cs.getString(1);
-                    String description = cs.getString(2);
-                    int hour = cs.getInt(3);
-                    int minute = cs.getInt(4);
-                    int month = cs.getInt(5);
-                    int day = cs.getInt(6);
-                    int year = cs.getInt(7);
 
-                    Log.i(TAG, "onItemClick: tempString is::::::::::::::" + name + "\n" + year);
+                //Construct the Task based on the stuff from the Database
+                if (cs.moveToFirst()) {
+                    taskId = cs.getInt(0);
                 }
 
                 db.insertLocationInto(taskId, place.getId());
                 db.insertLatLngInto(taskId, place.getLatLng().latitude, place.getLatLng().longitude);
 
-
-
-                //MyTask myTask = (MyTask)arrayAdapter.getItem(position);
-
-                //Log.i(TAG, "onItemClick: Task ID: " + myTask.getId());
-                //MyTask myTask = (MyTask) parent.getItemAtPosition(position);
-
-                //db.updateData(myTask.getId(), place.getId());
 
                 Log.i(TAG, "onItemClick: Position number: " + position + " clicked.");
                 Log.i(TAG, "onItemClick: Added Location ID: " + place.getId());
@@ -485,7 +370,6 @@ public class HomeFragment extends Fragment implements LocationListener,
             int year = cursor.getInt(7);
             boolean notify = cursor.getInt(8) > 0;
             boolean complete = cursor.getInt(9) > 0;
-            String locId = cursor.getString(0);
 
             MyTask myTask =
                     new MyTask(id, name, desc, notify, hour, minute, month, day,
@@ -501,7 +385,6 @@ public class HomeFragment extends Fragment implements LocationListener,
         return myTasks;
     }
 
-
     private ArrayList<String> fillTasksString(DBSQLiteOpenHelper db) {
         ArrayList<String> tasks = new ArrayList<>();
 
@@ -516,7 +399,4 @@ public class HomeFragment extends Fragment implements LocationListener,
         }
         return tasks;
     }
-
-
-
 }

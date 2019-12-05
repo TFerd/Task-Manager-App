@@ -25,7 +25,6 @@ public class NotificationPublisher extends BroadcastReceiver {
 
 
         //Receives the MyTask from the intent as a bundle
-        //MyTask myTask = (MyTask) intent.getSerializableExtra("TASK");
         Bundle receiveBundle = intent.getBundleExtra("DATA");
         MyTask myTask = (MyTask)receiveBundle.getSerializable("taskKey");
 

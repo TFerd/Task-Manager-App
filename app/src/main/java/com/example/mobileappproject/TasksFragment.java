@@ -42,10 +42,6 @@ public class TasksFragment extends Fragment {
 
     ListView listView;
 
-    //@TODO:
-    //  Create an array of tasks somehow that the user will be able to add/edit/remove.
-    //  Maybe make a MyTask class
-    //ArrayList<String> myTaskArray;
     ArrayList<MyTask> myTaskArray;
 
 
@@ -179,9 +175,6 @@ public class TasksFragment extends Fragment {
                                 Log.i(TAG, "onClick: MyTask added WITHOUT description. Notifications = " + myTask.isNotification()
                                         + "\nThe tasks hour is: " + myTask.getHour() + " | The minute is: " + myTask.getMinute());
 
-                                //scheduleNotification(myTask.getTaskName(), 3500);
-                                //scheduleNotification(myTask);
-
                                 //Adds a notification ONLY if notifications are checked
                                 if (myTask.isNotification()) {
                                     scheduleNotification(myTask);
@@ -205,9 +198,6 @@ public class TasksFragment extends Fragment {
 
                                 Log.i(TAG, "onClick: MyTask added WITH description. Notifications = " + myTask.isNotification()
                                         + "\nThe tasks hour is: " + myTask.getHour() + " | The minute is: " + myTask.getMinute());
-
-                                //scheduleNotification(myTask.getTaskName(), 3500);
-                                //scheduleNotification(myTask);
 
                                 //Adds a notification ONLY if notifications are checked
                                 if (myTask.isNotification() == true) {
@@ -248,11 +238,6 @@ public class TasksFragment extends Fragment {
     //*******************************************************************************
     //***************************** NOTIFICATION METHOD *****************************               //Edit stuff here for the notification when the time comes
     //*******************************************************************************
-    //@TODO
-    //  Make it so if the user chooses NO notifications, and then edits to say YES notifications, it will
-    //  call the notification.
-    //  Also, add more notifications for a myTask. (Remind 1 hour before or 30 minutes before etc.)
-    //  Also, add the ability to take the user back to the app when the notification is clicked.
     private void scheduleNotification(MyTask myTask){
 
         Log.i(TAG, "scheduleNotification: Called");
@@ -280,8 +265,6 @@ public class TasksFragment extends Fragment {
             Log.i(TAG, "scheduleNotification: SDK is lower than 26");
         }
 
-        //builder.setContentTitle("Title");
-        //builder.setContentText(myTask.getTaskName() + " notification");
         builder.setContentTitle("Reminder!");
         builder.setContentText(myTask.getTaskName() + " is scheduled for now!");
 
@@ -292,7 +275,7 @@ public class TasksFragment extends Fragment {
         Intent notificationIntent = new Intent(getContext(), NotificationPublisher.class);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
-        //notificationIntent.putExtra("TASK", myTask);
+
         //The Bundle is for passing the myTask to the NotificationPublisher so that it can edit the myTask once the notification happens.
         Bundle taskBundle = new Bundle();
         taskBundle.putSerializable("taskKey", (Serializable) myTask);
@@ -313,10 +296,7 @@ public class TasksFragment extends Fragment {
         Log.i(TAG, "scheduleNotification: MyTask hasBeenNotified pre-notification (Should return false): " + myTask.hasBeenNotified());
 
         Log.i(TAG, "scheduleNotification: Completed");
-
-
     }
-
 
     //This method calculates the time before the notification arrives.
     //Currently it just subtracts the date of the myTask to the current time to figure out the time buffer before the notification.
@@ -355,6 +335,4 @@ public class TasksFragment extends Fragment {
         }
         return myTasks;
     }
-
-
 }

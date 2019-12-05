@@ -10,11 +10,11 @@ public class MyTask implements Serializable {      //The serializable basically 
     private int hour,minute;
     private int id;
     private int month, day, year;
-    //location variable
     private boolean notification;
     private boolean isComplete;
     private boolean hasBeenNotified = false;
 
+    //Location Variables
     private String locationId = "";
     private double lat, lng;
 

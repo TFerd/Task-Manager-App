@@ -35,7 +35,6 @@ public class PagerController extends FragmentPagerAdapter {
                 Log.wtf(TAG, "Case Default somehow reached, returning null...");
                 return null;
         }
-
     }
 
     @Override
