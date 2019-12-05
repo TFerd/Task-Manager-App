@@ -31,6 +31,8 @@ public class DBSQLiteOpenHelper extends SQLiteOpenHelper {
     private final static String col_9 = "COMPLETE";
     private final static String col_10 = "LOCATION";
 
+    private static final String col_11 = "LAT";
+    private static final String col_12 = "LNG";
 
     public DBSQLiteOpenHelper(@Nullable Context context) {
 
@@ -47,7 +49,8 @@ public class DBSQLiteOpenHelper extends SQLiteOpenHelper {
         Log.i(TAG, " Reached On Create");
 
         db.execSQL("CREATE TABLE " + TABLE_NAME + "(" + id + " INTEGER PRIMARY KEY AUTOINCREMENT," + col_1 + " TEXT," + col_2 + " TEXT," + col_3 + " INTEGER,"
-                + col_4 + " INTEGER," + col_5 + " INTEGER," + col_6 + " INTEGER," + col_7 + " INTEGER," + col_8 + " BOOL," + col_9 + " BOOL," + col_10 + " TEXT" +")");
+                + col_4 + " INTEGER," + col_5 + " INTEGER," + col_6 + " INTEGER," + col_7 + " INTEGER," + col_8 + " BOOL," + col_9 + " BOOL," + col_10 + " TEXT,"
+                + col_11 + " REAL," + col_12 + " Real"+")");
     }
 
     @Override
@@ -59,7 +62,8 @@ public class DBSQLiteOpenHelper extends SQLiteOpenHelper {
     }
 
 
-    public boolean insertData(String name, String description, int hour, int minute, int month, int day, int year, boolean notify, boolean complete, String location) {
+    public boolean insertData(String name, String description, int hour, int minute, int month, int day, int year, boolean notify, boolean complete,
+                              String location, double lat, double lng) {
 
         Log.i(TAG, "Insert Data Reached");
 
@@ -76,6 +80,8 @@ public class DBSQLiteOpenHelper extends SQLiteOpenHelper {
         cv.put(col_8, notify);
         cv.put(col_9, complete);
         cv.put(col_10, location);
+        cv.put(col_11, lat);
+        cv.put(col_12, lng);
 
         long result = db.insert(TABLE_NAME, null, cv);
 
@@ -102,7 +108,8 @@ public class DBSQLiteOpenHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public boolean updateData(int key, String name, String description, int hour, int minute, int month, int day, int year, boolean notify, boolean complete, String location) {
+    public boolean updateData(int key, String name, String description, int hour, int minute, int month, int day, int year, boolean notify, boolean complete,
+                              String location, double lat, double lng) {
 
         try {
             SQLiteDatabase db = this.getWritableDatabase();
@@ -117,6 +124,8 @@ public class DBSQLiteOpenHelper extends SQLiteOpenHelper {
             cv.put(col_8, notify);
             cv.put(col_9, complete);
             cv.put(col_10, location);
+            cv.put(col_11, lat);
+            cv.put(col_12, lng);
 
             int results = db.update(TABLE_NAME, cv, "id = ?", new String[]{key+""});
 
@@ -133,6 +142,15 @@ public class DBSQLiteOpenHelper extends SQLiteOpenHelper {
         }
     }
 
+    public boolean updateData(int key, String location){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(col_10, location);
+
+        int results = db.update(TABLE_NAME, cv, "id = ?" + key, new String[]{key+""});
+        return true;
+    }
+
     public void deleteData(String key){
         SQLiteDatabase db = getWritableDatabase();
         db.delete(TABLE_NAME, "id = ?", new String[] { key });
@@ -140,11 +158,67 @@ public class DBSQLiteOpenHelper extends SQLiteOpenHelper {
         Log.i(TAG, "deleteData: ");
     }
 
-    public Cursor where(String whereClause, String equals){
+    public Cursor where(String whereClause){
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(TABLE_NAME, new String[] {whereClause}, null,null,null,null,null );
 
         return cursor;
     }
 
+    public Cursor selectFrom(String where){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE NAME = ?", new String[]{where});
+
+        return cursor;
+
     }
+
+    public Cursor selectFrom(int where){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE id = ?", new String[]{where+""});
+
+        return cursor;
+
+    }
+
+    /*
+    public boolean insertLocationInto(String locationId, String name){
+        Log.i(TAG, "insertLocationInto: called");
+        
+        SQLiteDatabase db = this.getWritableDatabase();
+        
+        db.execSQL("INSERT INTO " + TABLE_NAME + " (" + col_10 + ") " +
+                "VALUES (" + locationId + ")" + " WHERE " + col_1 + " = " + name);
+        
+        return true;
+
+    } */
+
+    public boolean insertLocationInto(int key, String locationId){
+        Log.i(TAG, "insertLocationInto: called");
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(col_10, locationId);
+
+        int results = db.update(TABLE_NAME, cv, "id = ?", new String[]{key+""});
+
+        return true;
+
+    }
+
+    public boolean insertLatLngInto(int key, double lat, double lng){
+        Log.i(TAG, "insertLocationInto: called");
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(col_11, lat);
+        cv.put(col_12, lng);
+
+        int results = db.update(TABLE_NAME, cv, "id = ?", new String[]{key+""});
+
+        return true;
+
+    }
+
+}

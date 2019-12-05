@@ -53,12 +53,6 @@ public class TasksFragment extends Fragment {
         Log.d(TAG, "constructed.");
     }
 
-    /*
-    @Override
-    public void onCreate(Bundle savedInstanceState){
-        super.onCreate(savedInstanceState);
-    }
-    */
 
     //***************************************************************************
     //IF YOU REPLACE 'return' WITH A VIEW VARIABLE THEN U CAN USE findViewById()*
@@ -113,7 +107,6 @@ public class TasksFragment extends Fragment {
                 final DatePicker datePicker = (DatePicker) dialog.findViewById(R.id.datePicker);
                 datePicker.setMinDate(System.currentTimeMillis() - 1000);                           //Sets the minimum date to the current date
 
-
                 final TimePicker timePicker = (TimePicker) dialog.findViewById(R.id.timePicker);
 
                 //@TODO
@@ -134,7 +127,8 @@ public class TasksFragment extends Fragment {
                         boolean notify = taskNotify.isChecked();
 
                         // Add task to database
-                        db.insertData(name, desc, hour, minute, month, day, year, notify, false, "");
+                        db.insertData(name, desc, hour, minute, month, day, year, notify, false,
+                                "", -1, -1);
 
                             /*
                                 OUTPUTS STORED DATA, NOT NECESSARY TO RUN PROGRAM, DELETE AFTER DEBUGGING
@@ -158,6 +152,8 @@ public class TasksFragment extends Fragment {
                             buffer.append("notify: " + res.getString(8) + "\n");
                             buffer.append("complete: " + res.getString(9) + "\n");
                             buffer.append("location_id: " + res.getString(10) + "\n");
+                            buffer.append("lat: " + res.getDouble(11) + "\n");
+                            buffer.append("long: " + res.getDouble(12) + "\n");
                             buffer.append("\n");
                             id = res.getInt(0);
                         }
@@ -166,7 +162,7 @@ public class TasksFragment extends Fragment {
                         builder.setCancelable(true);
                         builder.setTitle("Data");
                         builder.setMessage(buffer);
-                        //builder.show();
+                        builder.show();
 
                         if(name.length() > 0) {
 
@@ -219,10 +215,8 @@ public class TasksFragment extends Fragment {
 
                                     Log.i(TAG, "onClick: Notification is " + myTask.isNotification() + ", notification scheduled...");
                                 }
-
                                 dialog.dismiss();
                             }
-
                         }
 
                         //Gives an error if there is no task name

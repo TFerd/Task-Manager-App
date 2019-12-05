@@ -8,7 +8,7 @@
     <string name="edit_button">Edit</string>
     <string name="delete_button">Delete</string>
     <string name="cancel_button">Cancel</string>
-    <string name="add_dialog_hint">Enter myTask name</string>
+    <string name="add_dialog_hint">Enter Task name</string>
     <string name="add_dialog_desc">Enter description (Optional)</string>
     <string name="add_dialog_notif">Notify?</string>
 

@@ -4,6 +4,10 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.Cursor;
+import android.location.Geocoder;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +21,10 @@ import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
+
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.libraries.places.api.model.Place;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,6 +44,8 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
     private Context context;
 
     private TextView listItemText;
+
+    private String apiKey = "AIzaSyBuLxjCEfnGwKTPOgiClUB_J4WCec_zApI";
 
 
     public CustomAdapter(ArrayList<MyTask> list, Context context) {
@@ -86,8 +96,8 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
         listItemText.setText(list.get(position).getTaskName());
 
         //Sets if the checkbox is checked based on notification status
-        CheckBox notifyCheckBox = (CheckBox) view.findViewById(R.id.list_checkbox);
-        notifyCheckBox.setChecked(list.get(position).isNotification());
+        //CheckBox notifyCheckBox = (CheckBox) view.findViewById(R.id.list_checkbox);
+        //notifyCheckBox.setChecked(list.get(position).isNotification());
 
         //Sets task description
         final TextView taskDescription = (TextView) view.findViewById(R.id.list_item_description);
@@ -98,6 +108,7 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
         //Button initializer
         ImageButton deleteButton = (ImageButton) view.findViewById(R.id.delete_btn);
         ImageButton editButton = (ImageButton) view.findViewById(R.id.edit_btn);
+        ImageButton directionButton = (ImageButton) view.findViewById(R.id.directions_btn);
 
         //Calendar builds the date and time which is set to the textView
         Calendar calendar = Calendar.getInstance();
@@ -233,7 +244,7 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
                             if (db.updateData(myTask.getId(), taskName.getText().toString(),
                                     taskDesc.getText().toString(), timePicker.getHour(), timePicker.getMinute(),
                                     datePicker.getMonth(), datePicker.getDayOfMonth(), datePicker.getYear(), taskNotify.isChecked(),
-                                    myTask.isComplete(), myTask.getLocationId())){
+                                    myTask.isComplete(), myTask.getLocationId(), myTask.getLat(), myTask.getLng())){
                                 Log.i(TAG, "onClick: MyTask edited.");
                             }
                             else
@@ -267,6 +278,35 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
             }
         });
 
+
+        directionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int taskId = list.get(position).getId();
+                double lat = -1;
+                double lng = -1;
+                String placeIdTester = "";
+                DBSQLiteOpenHelper db = new DBSQLiteOpenHelper(context);
+                Cursor cursor = db.selectFrom(taskId);
+
+                if(cursor.moveToFirst()){
+                    placeIdTester = cursor.getString(10);
+                    lat = cursor.getDouble(11);
+                    lng = cursor.getDouble(12);
+
+                    Log.i(TAG, "onClick: LATLNG: " + lat + ", " + lng);
+                }
+
+                if (placeIdTester.length() > 1 && !placeIdTester.isEmpty()) {
+                    getDirections(lat, lng);
+                    Log.i(TAG, "onClick: clicked.");
+                }
+                else{
+                    Log.i(TAG, "onClick: Place id is empty.");
+                }
+            }
+        });
+
         return view;
     }
 
@@ -278,6 +318,44 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
 
         Log.i(TAG, "addItem: MyTask added");
 
+    }
+
+    private void getDirections(final double lat, final double lng) {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        
+        builder.setMessage("Open Google Maps?")
+                .setCancelable(true)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+
+
+                        String latitude = String.valueOf(lat);
+                        String longitude = String.valueOf(lng);
+                        Uri intentUri = Uri.parse("google.navigation:q=" + latitude + "," + longitude);
+                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, intentUri);
+                        mapIntent.setPackage("com.google.android.apps.maps");
+
+                        try {
+
+                                context.startActivity(mapIntent);
+
+                        } catch (NullPointerException e) {
+
+                            Log.e(TAG, "onClick: NullPointerException: Couldn't open map." + e.getMessage());
+
+                            Toast.makeText(context, "Couldn't open map", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        final AlertDialog alert = builder.create();
+        alert.show();
     }
 
 

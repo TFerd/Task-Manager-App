@@ -16,7 +16,23 @@ public class MyTask implements Serializable {      //The serializable basically 
     private boolean hasBeenNotified = false;
 
     private String locationId = "";
+    private double lat, lng;
 
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
+    }
 
     //Constructor for MyTask without description
     public MyTask(int id, String taskName, boolean notification, int hour, int minute, int month, int day, int year){
