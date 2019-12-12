@@ -18,7 +18,7 @@ public class DBSQLiteOpenHelper extends SQLiteOpenHelper {
     private final static String DATABASE_NAME = "tasks.db";
     private final static String TABLE_NAME = "task_table";
     public final static String id = "id";
-    private int key = 0;
+
     private final static String col_1 = "NAME";
     private final static String col_2 = "DESCRIPTION";
     private final static String col_3 = "HOUR";
@@ -29,9 +29,12 @@ public class DBSQLiteOpenHelper extends SQLiteOpenHelper {
     private final static String col_8 = "NOTIFY";
     private final static String col_9 = "COMPLETE";
     private final static String col_10 = "LOCATION";
-
     private static final String col_11 = "LAT";
     private static final String col_12 = "LNG";
+
+
+    private int key = 0;
+
 
     public DBSQLiteOpenHelper(@Nullable Context context) {
 
@@ -83,8 +86,6 @@ public class DBSQLiteOpenHelper extends SQLiteOpenHelper {
         cv.put(col_12, lng);
 
         long result = db.insert(TABLE_NAME, null, cv);
-
-        //this.key += 1;
 
         if (result == -1) {
 
@@ -169,7 +170,6 @@ public class DBSQLiteOpenHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE NAME = ?", new String[]{where});
 
         return cursor;
-
     }
 
     public Cursor selectFrom(int where){
@@ -177,21 +177,8 @@ public class DBSQLiteOpenHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE id = ?", new String[]{where+""});
 
         return cursor;
-
     }
 
-    /*
-    public boolean insertLocationInto(String locationId, String name){
-        Log.i(TAG, "insertLocationInto: called");
-        
-        SQLiteDatabase db = this.getWritableDatabase();
-        
-        db.execSQL("INSERT INTO " + TABLE_NAME + " (" + col_10 + ") " +
-                "VALUES (" + locationId + ")" + " WHERE " + col_1 + " = " + name);
-        
-        return true;
-
-    } */
 
     public boolean insertLocationInto(int key, String locationId){
         Log.i(TAG, "insertLocationInto: called");
@@ -203,7 +190,6 @@ public class DBSQLiteOpenHelper extends SQLiteOpenHelper {
         int results = db.update(TABLE_NAME, cv, "id = ?", new String[]{key+""});
 
         return true;
-
     }
 
     public boolean insertLatLngInto(int key, double lat, double lng){
@@ -217,7 +203,5 @@ public class DBSQLiteOpenHelper extends SQLiteOpenHelper {
         int results = db.update(TABLE_NAME, cv, "id = ?", new String[]{key+""});
 
         return true;
-
     }
-
 }

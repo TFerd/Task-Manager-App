@@ -76,13 +76,9 @@ public class TasksFragment extends Fragment {
         listView.setAdapter(adapter);
 
 
-        //@TODO
-        //  Add more options to the FAB, maybe like delete all? Or maybe don't add anything to it at all lol
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.addFAB);
 
 
-        //@TODO
-        //  Add a warning about adding tasks with the same name as another task
         //Creates a dialog popup when addTask is clicked.
         //This dialog is where the user will fill in the details of the task.
         fab.setOnClickListener(new View.OnClickListener() {
@@ -158,7 +154,7 @@ public class TasksFragment extends Fragment {
                         builder.setCancelable(true);
                         builder.setTitle("Data");
                         builder.setMessage(buffer);
-                        builder.show();
+                        builder.show();             //This simply outputs the contents of the database onto the screen for debugging purposes.
 
                         if(name.length() > 0) {
 

@@ -87,10 +87,6 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
         listItemText = (TextView) view.findViewById(R.id.list_item_text);
         listItemText.setText(list.get(position).getTaskName());
 
-        //Sets if the checkbox is checked based on notification status
-        //CheckBox notifyCheckBox = (CheckBox) view.findViewById(R.id.list_checkbox);
-        //notifyCheckBox.setChecked(list.get(position).isNotification());
-
         //Sets task description
         final TextView taskDescription = (TextView) view.findViewById(R.id.list_item_description);
         taskDescription.setText(list.get(position).getTaskDescription());
@@ -276,6 +272,7 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
                 double lng = -1;
                 String placeIdTester = "";
                 DBSQLiteOpenHelper db = new DBSQLiteOpenHelper(context);
+
                 Cursor cursor = db.selectFrom(taskId);
 
                 if(cursor.moveToFirst()){
@@ -324,10 +321,7 @@ public class CustomAdapter extends BaseAdapter implements ListAdapter {
                         try {
                                 context.startActivity(mapIntent);
                         } catch (NullPointerException e) {
-
                             Log.e(TAG, "onClick: NullPointerException: Couldn't open map." + e.getMessage());
-
-                            Toast.makeText(context, "Couldn't open map", Toast.LENGTH_SHORT).show();
                         }
                     }
                 })

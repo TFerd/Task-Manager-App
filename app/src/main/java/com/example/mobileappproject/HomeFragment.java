@@ -58,7 +58,6 @@ import java.util.Arrays;
 
 /*
  *   Home Fragment is now home to the Google Map feature.
- *
  */
 
 public class HomeFragment extends Fragment implements LocationListener,
@@ -82,10 +81,6 @@ public class HomeFragment extends Fragment implements LocationListener,
     private Location lastLocation;
 
     private FusedLocationProviderClient fusedLocationProviderClient;
-
-
-
-    private EditText searchText;
 
     private ImageView centerGPS;
 
@@ -204,7 +199,6 @@ public class HomeFragment extends Fragment implements LocationListener,
 
                 }
             });
-
         }
         return view;
     }
